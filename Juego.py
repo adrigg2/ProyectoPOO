@@ -11,7 +11,12 @@ class Juego:
     def __init__(self) -> None:
         self.tablero = Tablero()
         self.piezas = []
-        self.vista = Vista()
+
+        piezas = {
+            1 : "\033[91mO\033[00m",
+            2 : "\033[92mO\033[00m"
+        }
+        self.vista = Vista(piezas)
 
     def generar_piezas(self) -> None:
         for i in range (3):
@@ -23,32 +28,6 @@ class Juego:
             for j in range(i - 7, 8, 2):
                 if j >= 0:
                     self.piezas.append(Pieza(Posicion(j, i), 1, self.tablero))
-                    
-        # self.piezas.append(Pieza(Posicion(1, 0), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(3, 0), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(5, 0), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(7, 0), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(0, 1), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(2, 1), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(4, 1), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(6, 1), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(1, 2), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(3, 2), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(5, 2), 2, self.tablero))
-        # self.piezas.append(Pieza(Posicion(7, 2), 2, self.tablero))
-
-        # self.piezas.append(Pieza(Posicion(0, 7), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(2, 7), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(4, 7), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(6, 7), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(1, 6), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(3, 6), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(5, 6), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(7, 6), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(0, 5), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(2, 5), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(4, 5), 1, self.tablero))
-        # self.piezas.append(Pieza(Posicion(6, 5), 1, self.tablero))
 
     def inicio(self):
         Vista.bienvenida()
@@ -70,7 +49,7 @@ class Juego:
             pieza.reportar_posicion()
         juego: bool = True
         while juego:
-            print(self.tablero)
+            self.vista.mostrar_tablero(self.tablero.casillas)
             juego = False
 
 

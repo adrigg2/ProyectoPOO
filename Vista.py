@@ -1,4 +1,9 @@
 class Vista:
+    piezas: dict[int, str]
+
+    def __init__(self, piezas: dict[int, str]) -> None:
+        self.piezas = piezas
+
     @staticmethod
     def bienvenida() -> None:
         print("Bienvenid@ al juego de las damas\n")
@@ -26,6 +31,17 @@ class Vista:
     @staticmethod
     def intrucciones() -> None:
         input("Presiona enter para continuar")
+
+    def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
+        resultado = ""
+        for fila in casillas_tablero:
+            for casilla in fila:
+                if casilla == 0:
+                    resultado += "·  "
+                else:
+                    resultado += f"{self.piezas[casilla]}  "
+            resultado += "\n"
+        print(resultado)
 
 if __name__ == "__main__":
     Vista.menu_principal()
