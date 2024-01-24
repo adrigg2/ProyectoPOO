@@ -16,9 +16,12 @@ class Pieza:
     def comprobar_movibilidad(self) -> bool:
         if not self.promocionado:
             for i in range (-1, 2, 2):
-                pos_objetivo: Posicion = self.posicion + Posicion(i, 1) #type:ignore
-                if self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                    return True
+                try:
+                    pos_objetivo: Posicion = self.posicion + Posicion(i, 1) #type:ignore
+                    if self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                        return True
+                except IndexError:
+                    continue
         return False
     
     def reportar_posicion(self) -> None:
