@@ -11,6 +11,11 @@ class Posicion:
             return Posicion(self.coord_x + __value.coord_x, self.coord_y + __value.coord_y)
         raise Exception("No se puede sumar posición con otros objetos.")
     
+    def __mul__(self, __value: object) -> object:
+        if type(__value) == Posicion:
+            return Posicion(self.coord_x * __value.coord_x, self.coord_y * __value.coord_y)
+        raise Exception("No se puede multiplicar posición con otros objetos.")
+    
     def __eq__(self, __value: object) -> bool:
         if type(__value) == Posicion:
             return self.coord_x == __value.coord_x and self.coord_y == __value.coord_y

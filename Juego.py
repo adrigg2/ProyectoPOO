@@ -58,7 +58,12 @@ class Juego:
                     if pieza.comprobar_movibilidad():
                         piezas_movibles.append(pieza.posicion)
             print(self.tablero)
-            self.vista.mostrar_piezas_movibles(piezas_movibles)
+            pieza_a_mover: str = self.vista.mostrar_piezas_movibles(piezas_movibles)
+            posicion_a_mover: Posicion = self.tablero.convertir_a_posicion(pieza_a_mover)
+
+            for pieza in self.piezas:
+                if pieza.posicion == posicion_a_mover:
+                    pass
 
             juego = False
 

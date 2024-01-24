@@ -44,6 +44,15 @@ class Tablero:
         if posicion_anterior != Posicion(-1, -1):
             self.casillas[posicion_anterior.coord_y][posicion_anterior.coord_x] = 0
         self.casillas[posicion.coord_y][posicion.coord_x] = jugador
+
+    def convertir_a_posicion(self, id_posicion: str):
+        coordenadas: list[int] = []
+        for letra in id_posicion:
+            if letra.isalpha():
+                coordenadas.append(self.diccionario_columna[letra])
+            elif letra.isnumeric():
+                coordenadas.append(int(letra))
+        return Posicion(coordenadas[0], coordenadas[1])
     
 if __name__ == "__main__":
     tablero = Tablero()

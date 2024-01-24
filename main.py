@@ -1,4 +1,5 @@
 from Juego import Juego
 
-juego = Juego()
-juego.inicio()
+if __name__ == "__main__":
+    juego = Juego()
+    juego.inicio()
