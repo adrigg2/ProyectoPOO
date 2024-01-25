@@ -43,7 +43,8 @@ class Tablero:
     def actualizar_tablero(self, posicion: Posicion, jugador: int, posicion_anterior: Posicion = Posicion(-1, -1)):
         if posicion_anterior != Posicion(-1, -1):
             self.casillas[posicion_anterior.coord_y][posicion_anterior.coord_x] = 0
-        self.casillas[posicion.coord_y][posicion.coord_x] = jugador
+        if posicion != Posicion(-1, -1):
+            self.casillas[posicion.coord_y][posicion.coord_x] = jugador
 
     def convertir_a_posicion(self, id_posicion: str):
         coordenadas: list[int] = []

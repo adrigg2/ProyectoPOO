@@ -62,9 +62,11 @@ class Juego:
 
             for pieza in self.piezas:
                 if pieza.posicion == posicion_pieza:
-                    posiciones_a_mover = pieza.calcular_movimientos()
-                    movimiento = self.vista.mostrar_movimientos(posiciones_a_mover)
-                    pieza.mover(movimiento)
+                    posiciones_a_mover: list[str] = pieza.calcular_movimientos()
+                    movimiento: str = self.vista.mostrar_movimientos(posiciones_a_mover)
+                    captura: bool = pieza.mover(movimiento)
+                    if captura:
+                        self.captura(movimiento)
                     break
 
             self.cambiar_turno()            
@@ -74,6 +76,12 @@ class Juego:
             self.turno = 2
         else:
             self.turno = 1
+
+    def captura(self, movimiento: str):
+        posicion_movimiento: Posicion = self.tablero.convertir_a_posicion(movimiento)
+        for pieza in self.piezas:
+            if pieza.capturar(posicion_movimiento):
+                self.piezas.remove(pieza)
 
 
 if __name__ == "__main__":

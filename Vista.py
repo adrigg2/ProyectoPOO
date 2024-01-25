@@ -46,14 +46,17 @@ class Vista:
         input("Presiona enter para continuar")
 
     def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
+        print()
         resultado = ""
-        for fila in casillas_tablero[::-1]:
-            for casilla in fila:
+        for fila in range(len(casillas_tablero) - 1, -1, -1):
+            resultado += f"{fila + 1}\t"
+            for casilla in casillas_tablero[fila]:
                 if casilla == 0:
                     resultado += "·  "
                 else:
                     resultado += f"{self.piezas[casilla]}  "
             resultado += "\n"
+        resultado += "\n\ta  b  c  d  e  f  g  h\n"
         print(resultado)
 
     def mostrar_piezas_movibles(self, posiciones: list[Posicion]) -> str:
