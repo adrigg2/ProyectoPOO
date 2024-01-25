@@ -47,7 +47,7 @@ class Vista:
 
     def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
         resultado = ""
-        for fila in casillas_tablero:
+        for fila in casillas_tablero[::-1]:
             for casilla in fila:
                 if casilla == 0:
                     resultado += "·  "
@@ -57,19 +57,34 @@ class Vista:
         print(resultado)
 
     def mostrar_piezas_movibles(self, posiciones: list[Posicion]) -> str:
-        resultado = ""
+        resultado: str = ""
         for posicion in posiciones:
-            id_casilla = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y)
+            id_casilla = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y + 1)
             resultado += id_casilla + "  "
         print(resultado)
 
-        pieza_a_mover = ""
+        pieza_a_mover: str = ""
         while pieza_a_mover.lower() not in resultado.split():
             pieza_a_mover: str = input("Elige pieza a mover: ")
             if pieza_a_mover.lower() not in resultado.split():
                 print("Esa no es una posición válida.")
 
         return pieza_a_mover
+    
+    def mostrar_movimientos(self, posiciones: list[str]) -> str:
+        resultado: str = ""
+        for posicion in posiciones:
+            resultado += posicion
+            resultado += "  "
+        print(resultado)
+
+        posicion_a_mover: str = ""
+        while posicion_a_mover.lower() not in resultado.split():
+            pieza_a_mover: str = input("Elige posición para mover la pieza: ")
+            if pieza_a_mover.lower() not in resultado.split():
+                print("Esa no es una posición válida.")
+
+        return posicion_a_mover
 
 if __name__ == "__main__":
     Vista.menu_principal()

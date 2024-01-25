@@ -26,38 +26,39 @@ class Pieza:
         }
 
         if self.jugador == 1:
-            self.direccion = Posicion(1, -1)
-        elif self.jugador == 2:
             self.direccion = Posicion(1, 1)
+        elif self.jugador == 2:
+            self.direccion = Posicion(1, -1)
     
     def comprobar_movibilidad(self) -> bool:
         if not self.promocionado:
             for i in range (-1, 2, 2):
                 try:
                     pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
-                    print(f"{self.posicion}, {pos_objetivo}")
                     if self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                        print("True")
                         return True
                 except IndexError:
                     continue
-        print("False")
         return False
     
     def reportar_posicion(self) -> None:
         self.tablero.actualizar_tablero(self.posicion, self.jugador)
     
-    def calcular_movimientos(self) -> str:
+    def calcular_movimientos(self) -> list[str]:
+        movimientos_validos: list[str] = []
         if not self.promocionado:
             for i in range (-1, 2, 2):
                 try:
                     pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
-                    print(f"{self.posicion}, {pos_objetivo}")
                     if self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                        print("True")
-                        return True
+                        movimientos_validos.append(self.codificar_posicion(pos_objetivo))
                 except IndexError:
                     continue
+        return movimientos_validos
+    
+    def codificar_posicion(self, posicion: Posicion) -> str:
+        resultado = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y)
+        return resultado
     
 if __name__ == "__main__":
     pieza1 = Pieza(Posicion(1, 1), 1, Tablero())

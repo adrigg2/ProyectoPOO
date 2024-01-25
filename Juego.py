@@ -24,12 +24,12 @@ class Juego:
         for i in range (3):
             for j in range(i - 1, 8, 2):
                 if j >= 0:
-                    self.piezas.append(Pieza(Posicion(j, i), 2, self.tablero))
+                    self.piezas.append(Pieza(Posicion(j, i), 1, self.tablero))
 
         for i in range (5, 8):
             for j in range(i - 7, 8, 2):
                 if j >= 0:
-                    self.piezas.append(Pieza(Posicion(j, i), 1, self.tablero))
+                    self.piezas.append(Pieza(Posicion(j, i), 2, self.tablero))
 
     def inicio(self):
         Vista.bienvenida()
@@ -59,11 +59,12 @@ class Juego:
                         piezas_movibles.append(pieza.posicion)
             print(self.tablero)
             pieza_a_mover: str = self.vista.mostrar_piezas_movibles(piezas_movibles)
-            posicion_a_mover: Posicion = self.tablero.convertir_a_posicion(pieza_a_mover)
+            posicion_pieza: Posicion = self.tablero.convertir_a_posicion(pieza_a_mover)
 
             for pieza in self.piezas:
-                if pieza.posicion == posicion_a_mover:
-                    pass
+                if pieza.posicion == posicion_pieza:
+                    posiciones_a_mover = pieza.calcular_movimientos()
+                    self.vista.mostrar_movimientos(posiciones_a_mover)
 
             juego = False
 
