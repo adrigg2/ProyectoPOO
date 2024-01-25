@@ -33,12 +33,10 @@ class Pieza:
     def comprobar_movibilidad(self) -> bool:
         if not self.promocionado:
             for i in range (-1, 2, 2):
-                try:
-                    pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
-                    if self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                        return True
-                except IndexError:
-                    continue
+                pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
+                no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
+                if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                    return True
         return False
     
     def reportar_posicion(self) -> None:
@@ -48,17 +46,21 @@ class Pieza:
         movimientos_validos: list[str] = []
         if not self.promocionado:
             for i in range (-1, 2, 2):
-                try:
-                    pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
-                    if self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                        movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                except IndexError:
-                    continue
+                pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
+                no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
+                if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                    movimientos_validos.append(self.codificar_posicion(pos_objetivo))
         return movimientos_validos
     
     def codificar_posicion(self, posicion: Posicion) -> str:
         resultado = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y + 1)
         return resultado
+    
+    def mover(self, movimiento: str) -> None:
+        nueva_posicion = self.tablero.convertir_a_posicion(movimiento)
+        vieja_posicion = Posicion(self.posicion.coord_x, self.posicion.coord_y)
+        self.posicion = nueva_posicion
+        self.tablero.actualizar_tablero(self.posicion, self.jugador, vieja_posicion)
     
 if __name__ == "__main__":
     pieza1 = Pieza(Posicion(1, 1), 1, Tablero())

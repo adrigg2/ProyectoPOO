@@ -57,22 +57,23 @@ class Juego:
                 if pieza.jugador == self.turno:
                     if pieza.comprobar_movibilidad():
                         piezas_movibles.append(pieza.posicion)
-            print(self.tablero)
             pieza_a_mover: str = self.vista.mostrar_piezas_movibles(piezas_movibles)
             posicion_pieza: Posicion = self.tablero.convertir_a_posicion(pieza_a_mover)
 
             for pieza in self.piezas:
                 if pieza.posicion == posicion_pieza:
                     posiciones_a_mover = pieza.calcular_movimientos()
-                    self.vista.mostrar_movimientos(posiciones_a_mover)
+                    movimiento = self.vista.mostrar_movimientos(posiciones_a_mover)
+                    pieza.mover(movimiento)
                     break
 
-            print("A")
-
-            if self.turno == 1:
-                self.turno = 2
-            else:
-                self.turno = 1
+            self.cambiar_turno()            
+    
+    def cambiar_turno(self):
+        if self.turno == 1:
+            self.turno = 2
+        else:
+            self.turno = 1
 
 
 if __name__ == "__main__":
