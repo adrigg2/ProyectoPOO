@@ -57,7 +57,7 @@ class Pieza:
         return movimientos_validos
     
     def codificar_posicion(self, posicion: Posicion) -> str:
-        resultado = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y)
+        resultado = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y + 1)
         return resultado
     
 if __name__ == "__main__":

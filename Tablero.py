@@ -51,7 +51,7 @@ class Tablero:
             if letra.isalpha():
                 coordenadas.append(self.diccionario_columna[letra])
             elif letra.isnumeric():
-                coordenadas.append(int(letra))
+                coordenadas.append(int(letra) - 1)
         return Posicion(coordenadas[0], coordenadas[1])
     
 if __name__ == "__main__":

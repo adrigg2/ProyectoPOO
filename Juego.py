@@ -65,6 +65,7 @@ class Juego:
                 if pieza.posicion == posicion_pieza:
                     posiciones_a_mover = pieza.calcular_movimientos()
                     self.vista.mostrar_movimientos(posiciones_a_mover)
+                    break
 
             juego = False
 

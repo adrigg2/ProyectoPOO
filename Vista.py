@@ -77,7 +77,7 @@ class Vista:
             resultado += posicion
             resultado += "  "
         print(resultado)
-
+        
         posicion_a_mover: str = ""
         while posicion_a_mover.lower() not in resultado.split():
             pieza_a_mover: str = input("Elige posición para mover la pieza: ")
