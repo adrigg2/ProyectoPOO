@@ -64,7 +64,7 @@ class Juego:
                 if pieza.posicion == posicion_pieza:
                     posiciones_a_mover: list[str] = pieza.calcular_movimientos()
                     movimiento: str = self.vista.mostrar_movimientos(posiciones_a_mover)
-                    captura: bool = pieza.mover(movimiento)
+                    captura, direccion = pieza.mover(movimiento)
                     if captura:
                         self.captura(movimiento)
                     break

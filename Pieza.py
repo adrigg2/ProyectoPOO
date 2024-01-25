@@ -66,7 +66,7 @@ class Pieza:
         resultado = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y + 1)
         return resultado
     
-    def mover(self, movimiento: str) -> bool:
+    def mover(self, movimiento: str) -> tuple[bool, Posicion]:
         nueva_posicion = self.tablero.convertir_a_posicion(movimiento)
         vieja_posicion = Posicion(self.posicion.coord_x, self.posicion.coord_y)
         self.posicion = nueva_posicion
@@ -75,9 +75,9 @@ class Pieza:
         if nueva_posicion != vieja_posicion + Posicion(1, 1) * self.direccion and nueva_posicion != vieja_posicion + Posicion(-1, 1) * self.direccion:
             return True
         else:
-            return False
+            return False, Posicion(0, 0)
 
-    def capturar(self, posicion_capturada: Posicion) -> bool:
+    def capturar(self, posicion_capturada: Posicion, direccion: Posicion) -> bool:
         posicion_capturada += Posicion(-1, -1) * self.direccion * Posicion(1, -1) #type:ignore
         if self.posicion == posicion_capturada:
             vieja_posicion = Posicion(self.posicion.coord_x, self.posicion.coord_y)
