@@ -67,7 +67,12 @@ class Juego:
                     self.vista.mostrar_movimientos(posiciones_a_mover)
                     break
 
-            juego = False
+            print("A")
+
+            if self.turno == 1:
+                self.turno = 2
+            else:
+                self.turno = 1
 
 
 if __name__ == "__main__":

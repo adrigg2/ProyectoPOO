@@ -65,7 +65,7 @@ class Vista:
 
         pieza_a_mover: str = ""
         while pieza_a_mover.lower() not in resultado.split():
-            pieza_a_mover: str = input("Elige pieza a mover: ")
+            pieza_a_mover = input("Elige pieza a mover: ")
             if pieza_a_mover.lower() not in resultado.split():
                 print("Esa no es una posición válida.")
 
@@ -77,11 +77,11 @@ class Vista:
             resultado += posicion
             resultado += "  "
         print(resultado)
-        
+
         posicion_a_mover: str = ""
         while posicion_a_mover.lower() not in resultado.split():
-            pieza_a_mover: str = input("Elige posición para mover la pieza: ")
-            if pieza_a_mover.lower() not in resultado.split():
+            posicion_a_mover = input("Elige posición para mover la pieza: ")
+            if posicion_a_mover.lower() not in resultado.split():
                 print("Esa no es una posición válida.")
 
         return posicion_a_mover
