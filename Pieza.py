@@ -77,10 +77,8 @@ class Pieza:
         self.posicion = nueva_posicion
         self.tablero.actualizar_tablero(self.posicion, self.jugador, vieja_posicion)
 
-        direccion: Posicion = nueva_posicion - vieja_posicion #type: ignore
-
         for captura in self.lista_capturas:
-            if captura[0] * self.direccion + direccion == nueva_posicion: #type: ignore
+            if captura[0] * nueva_posicion == Posicion(abs(nueva_posicion.coord_x), abs(nueva_posicion.coord_y)): #type: ignore
                 return True, captura[1]
         
         return False, Posicion(-1, -1)
