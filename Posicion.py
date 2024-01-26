@@ -14,6 +14,7 @@ class Posicion:
     def __sub__(self, __value: object) -> object:
         if type(__value) == Posicion:
             return self + Posicion(-__value.coord_x, -__value.coord_y)
+        raise Exception("No se puede restar posición con otros objetos.")
     
     def __mul__(self, __value: object) -> object:
         if type(__value) == Posicion:
@@ -23,12 +24,14 @@ class Posicion:
     def __eq__(self, __value: object) -> bool:
         if type(__value) == Posicion:
             return self.coord_x == __value.coord_x and self.coord_y == __value.coord_y
-        raise Exception("No se puede comparar posición con otros objetos.")
+        else:
+            return False
     
     def __ne__(self, __value: object) -> bool:
-        if type(__value) == Posicion:
-            return self.coord_x != __value.coord_x or self.coord_y != __value.coord_y
-        raise Exception("No se puede comparar posición con otros objetos.")
+        return not (self == __value)
+    
+    def __copy__(self) -> object:
+        return Posicion(self.coord_x, self.coord_y)
 
     def __str__(self) -> str:
         return f"x: {self.coord_x} y: {self.coord_y}"
@@ -47,3 +50,9 @@ if __name__ == "__main__":
     print(pos)
     print(pos2)
     print(pos3)
+
+    print(pos != pos2)
+
+    pos = Posicion(2, 2)
+
+    print(pos != pos2)

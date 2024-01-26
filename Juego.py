@@ -64,24 +64,25 @@ class Juego:
                 if pieza.posicion == posicion_pieza:
                     posiciones_a_mover: list[str] = pieza.calcular_movimientos()
                     movimiento: str = self.vista.mostrar_movimientos(posiciones_a_mover)
-                    captura, direccion = pieza.mover(movimiento)
+                    captura, posicion_captura = pieza.mover(movimiento)
                     if captura:
-                        self.captura(movimiento)
+                        self.captura(posicion_captura)
                     break
 
             self.cambiar_turno()            
     
-    def cambiar_turno(self):
+    def cambiar_turno(self) -> None:
         if self.turno == 1:
             self.turno = 2
         else:
             self.turno = 1
 
-    def captura(self, movimiento: str):
-        posicion_movimiento: Posicion = self.tablero.convertir_a_posicion(movimiento)
+    def captura(self, posicion: Posicion) -> None:
         for pieza in self.piezas:
-            if pieza.capturar(posicion_movimiento):
+            if pieza.posicion == posicion:
+                pieza.capturar()
                 self.piezas.remove(pieza)
+                return
 
 
 if __name__ == "__main__":
