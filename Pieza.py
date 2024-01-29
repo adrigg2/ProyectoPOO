@@ -6,9 +6,11 @@ class Pieza:
     direccion: Posicion
     dama: bool
     jugador: int
+    id: int
     tablero: Tablero
     diccionario_columna: dict[int, str]
     lista_capturas: list[list[Posicion]]
+    fila_promociones: list[Posicion]
 
     def __init__(self, posicion: Posicion, jugador: int, tablero: Tablero) -> None:
         self.posicion = posicion
@@ -26,11 +28,14 @@ class Pieza:
             7 : 'h'
         }
         self.lista_capturas = []
+        self.id = self.jugador * 10
 
         if self.jugador == 1:
             self.direccion = Posicion(1, 1)
+            self.fila_promociones = [Posicion(0, 7), Posicion(2, 7), Posicion(4, 7), Posicion(6, 7)]
         elif self.jugador == 2:
             self.direccion = Posicion(1, -1)
+            self.fila_promociones = [Posicion(1, 0), Posicion(3, 0), Posicion(5, 0), Posicion(7, 0)]
     
     def comprobar_movibilidad(self) -> bool:
         if not self.dama:
@@ -39,7 +44,7 @@ class Pieza:
                 no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                 if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
                     return True
-                elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) != self.jugador:
+                elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
                     pos_objetivo += Posicion(i, 1) * self.direccion #type: ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                     if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
@@ -47,7 +52,7 @@ class Pieza:
         return False
     
     def reportar_posicion(self) -> None:
-        self.tablero.actualizar_tablero(self.posicion, self.jugador)
+        self.tablero.actualizar_tablero(self.posicion, self.id)
     
     def calcular_movimientos(self) -> list[str]:
         movimientos_validos: list[str] = []
@@ -58,7 +63,7 @@ class Pieza:
                 no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                 if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
                     movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) != self.jugador:
+                elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
                     pos_captura: Posicion = pos_objetivo.__copy__() #type:ignore
                     pos_objetivo += Posicion(i, 1) * self.direccion #type: ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
@@ -75,10 +80,17 @@ class Pieza:
         nueva_posicion = self.tablero.convertir_a_posicion(movimiento)
         vieja_posicion = Posicion(self.posicion.coord_x, self.posicion.coord_y)
         self.posicion = nueva_posicion
-        self.tablero.actualizar_tablero(self.posicion, self.jugador, vieja_posicion)
+
+        if self.posicion in self.fila_promociones:
+            self.promocionar()
+        
+        self.tablero.actualizar_tablero(self.posicion, self.id, vieja_posicion)
 
         for captura in self.lista_capturas:
-            if captura[0] * nueva_posicion == Posicion(abs(nueva_posicion.coord_x), abs(nueva_posicion.coord_y)):
+            print("Intentando captura")
+            if (nueva_posicion - vieja_posicion).coord_x / captura[0].coord_x == (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y): #type:ignore
+            #if captura[0] * nueva_posicion == Posicion(abs(nueva_posicion.coord_x), abs(nueva_posicion.coord_y)):
+                print("Captura")
                 return True, captura[1]
         
         return False, Posicion(-1, -1)
@@ -86,7 +98,11 @@ class Pieza:
     def capturar(self) -> None:
         vieja_posicion = Posicion(self.posicion.coord_x, self.posicion.coord_y)
         self.posicion = Posicion(-1, -1)
-        self.tablero.actualizar_tablero(self.posicion, self.jugador, vieja_posicion)
+        self.tablero.actualizar_tablero(self.posicion, self.id, vieja_posicion)
+    
+    def promocionar(self) -> None:
+        self.dama = True
+        self.id += 1
 
 if __name__ == "__main__":
     pieza1 = Pieza(Posicion(1, 1), 1, Tablero())

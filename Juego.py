@@ -14,8 +14,10 @@ class Juego:
         self.piezas = []
 
         piezas = {
-            1 : "\033[91mo\033[00m",
-            2 : "\033[92mo\033[00m"
+            10 : "\033[91mo\033[00m",
+            20 : "\033[92mo\033[00m",
+            11 : "\033[91mO\033[00m",
+            21 : "\033[92mO\033[00m"
         }
         self.vista = Vista(piezas)
         self.turno = 1
@@ -52,6 +54,7 @@ class Juego:
         juego: bool = True
         while juego:
             self.vista.mostrar_tablero(self.tablero.casillas)
+            print(self.tablero)
             piezas_movibles: list[Posicion] = []
             for pieza in self.piezas:
                 if pieza.jugador == self.turno:

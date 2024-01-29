@@ -79,9 +79,9 @@ class Vista:
         print(resultado)
 
         posicion_a_mover: str = ""
-        while posicion_a_mover.lower() not in resultado.split():
-            posicion_a_mover = input("Elige posición para mover la pieza: ")
-            if posicion_a_mover.lower() not in resultado.split():
+        while posicion_a_mover.lower() not in resultado.split() and posicion_a_mover.lower() != "atras":
+            posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ")
+            if posicion_a_mover.lower() not in resultado.split() and posicion_a_mover.lower() != "atras":
                 print("Esa no es una posición válida.")
 
         return posicion_a_mover
