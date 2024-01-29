@@ -1,10 +1,9 @@
+from dataclasses import dataclass
+
+@dataclass
 class Posicion:
     coord_x: int
     coord_y: int
-
-    def __init__(self, coord_x: int, coord_y: int) -> None:
-        self.coord_x = coord_x
-        self.coord_y = coord_y
 
     def __add__(self, __value: object) -> object:
         if type(__value) == Posicion:
@@ -21,20 +20,8 @@ class Posicion:
             return Posicion(self.coord_x * __value.coord_x, self.coord_y * __value.coord_y)
         raise Exception("No se puede multiplicar posición por otros objetos.")
     
-    def __eq__(self, __value: object) -> bool:
-        if type(__value) == Posicion:
-            return self.coord_x == __value.coord_x and self.coord_y == __value.coord_y
-        else:
-            return False
-    
-    def __ne__(self, __value: object) -> bool:
-        return not (self == __value)
-    
     def __copy__(self) -> object:
         return Posicion(self.coord_x, self.coord_y)
-
-    def __str__(self) -> str:
-        return f"x: {self.coord_x} y: {self.coord_y}"
 
 if __name__ == "__main__":
     pos = Posicion(1, 1)

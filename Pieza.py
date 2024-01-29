@@ -4,7 +4,7 @@ from Posicion import Posicion
 class Pieza:
     posicion: Posicion
     direccion: Posicion
-    promocionado: bool
+    dama: bool
     jugador: int
     tablero: Tablero
     diccionario_columna: dict[int, str]
@@ -12,7 +12,7 @@ class Pieza:
 
     def __init__(self, posicion: Posicion, jugador: int, tablero: Tablero) -> None:
         self.posicion = posicion
-        self.promocionado = False
+        self.dama = False
         self.jugador = jugador
         self.tablero = tablero
         self.diccionario_columna = {
@@ -33,7 +33,7 @@ class Pieza:
             self.direccion = Posicion(1, -1)
     
     def comprobar_movibilidad(self) -> bool:
-        if not self.promocionado:
+        if not self.dama:
             for i in range (-1, 2, 2):
                 pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
                 no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
@@ -52,7 +52,7 @@ class Pieza:
     def calcular_movimientos(self) -> list[str]:
         movimientos_validos: list[str] = []
         self.lista_capturas = []
-        if not self.promocionado:
+        if not self.dama:
             for i in range (-1, 2, 2):
                 pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
                 no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
@@ -78,7 +78,7 @@ class Pieza:
         self.tablero.actualizar_tablero(self.posicion, self.jugador, vieja_posicion)
 
         for captura in self.lista_capturas:
-            if captura[0] * nueva_posicion == Posicion(abs(nueva_posicion.coord_x), abs(nueva_posicion.coord_y)): #type: ignore
+            if captura[0] * nueva_posicion == Posicion(abs(nueva_posicion.coord_x), abs(nueva_posicion.coord_y)):
                 return True, captura[1]
         
         return False, Posicion(-1, -1)
