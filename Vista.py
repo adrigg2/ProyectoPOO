@@ -17,12 +17,10 @@ class Vista:
             7 : 'h'
         }
 
-    @staticmethod
-    def bienvenida() -> None:
+    def bienvenida(self) -> None:
         print("Bienvenid@ al juego de las damas\n")
     
-    @staticmethod
-    def menu_principal() -> int:
+    def menu_principal(self) -> int:
         print("Elije una opción (escribiendo su número)")
         print("1. Intrucciones\n2. Jugar\n3. Salir")
 
@@ -41,8 +39,7 @@ class Vista:
         
         return opcion #type:ignore
     
-    @staticmethod
-    def intrucciones() -> None:
+    def intrucciones(self) -> None:
         input("Presiona enter para continuar")
 
     def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
@@ -88,6 +85,17 @@ class Vista:
                 print("Esa no es una posición válida.")
 
         return posicion_a_mover
+    
+    def fin_de_juego(self, perdedor: int):
+        if perdedor == 1:
+            print("------------------")
+            print("Ganan las negras")
+            print("------------------")
+        elif perdedor == 2:
+            print("------------------")
+            print("Ganan las blancas")
+            print("------------------")
+
 
 if __name__ == "__main__":
-    Vista.menu_principal()
+    pass
