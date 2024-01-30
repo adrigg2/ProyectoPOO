@@ -25,7 +25,7 @@ mayor calidad, dama antes que peón.
 --    - Tiene piezas, pero tocándole turno no tiene movimiento posible (c).
     - Abandone la partida.
 
-
+14. Reinicio
 
 --# Si un jugador no puede mover, ha perdido.
 

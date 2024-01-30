@@ -20,25 +20,6 @@ class Vista:
     def bienvenida(self) -> None:
         print("Bienvenid@ al juego de las damas\n")
     
-    def menu_principal(self) -> int:
-        print("Elije una opción (escribiendo su número)")
-        print("1. Intrucciones\n2. Jugar\n3. Salir")
-
-        opcion_correcta: bool = False
-
-        while not opcion_correcta:
-            try:
-                opcion: int = int(input())
-
-                if opcion <= 0 or opcion > 3:
-                    raise ValueError("Opción no válida")
-            except ValueError:
-                print("\nOpción no válida\n")
-            else:
-                opcion_correcta = True
-        
-        return opcion #type:ignore
-    
     def intrucciones(self) -> None:
         input("Presiona enter para continuar")
 
@@ -52,6 +33,14 @@ class Vista:
                     resultado += "·  "
                 else:
                     resultado += f"{self.piezas[casilla]}  "
+            if fila == 4:
+                resultado += "\t PARA ABANDONAR LA PARTIDA"
+            elif fila == 5:
+                resultado += "\t ESCRIBE \"ABANDONAR\""
+            elif fila == 2:
+                resultado += "\t PARA REINICIAR LA PARTIDA"
+            elif fila == 3:
+                resultado += "\t ESCRIBE \"REINICIAR\""
             resultado += "\n"
         resultado += "\n\ta  b  c  d  e  f  g  h\n"
         print(resultado)
@@ -69,7 +58,7 @@ class Vista:
             if pieza_a_mover.lower() not in resultado.split():
                 print("Esa no es una posición válida.")
 
-        return pieza_a_mover
+        return pieza_a_mover.lower()
     
     def mostrar_movimientos(self, posiciones: list[str]) -> str:
         resultado: str = ""
@@ -79,12 +68,12 @@ class Vista:
         print(resultado)
 
         posicion_a_mover: str = ""
-        while posicion_a_mover.lower() not in resultado.split() and posicion_a_mover.lower() != "atras":
+        while posicion_a_mover.lower() not in resultado.split() and posicion_a_mover.lower() != "atras" and posicion_a_mover.upper() != "ABANDONAR":
             posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ")
-            if posicion_a_mover.lower() not in resultado.split() and posicion_a_mover.lower() != "atras":
+            if posicion_a_mover.lower() not in resultado.split() and posicion_a_mover.lower() != "atras" and posicion_a_mover.upper() != "ABANDONAR":
                 print("Esa no es una posición válida.")
 
-        return posicion_a_mover
+        return posicion_a_mover.lower()
     
     def fin_de_juego(self, perdedor: int):
         if perdedor == 1:

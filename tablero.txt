@@ -1,9 +1,9 @@
 8   ·  #  ·  #  ·  #  ·  #
 7   #  #  #  #  #  #  #  #
-6   #  #  #  #  #  #  #  #
-5   #  #  #  #  #  #  #  #
-4   #  #  #  #  #  #  #  #
-3   #  #  #  #  #  #  #  #
+6   #  #  #  #  #  #  #  #      ESCRIBE "ABANDONAR"
+5   #  #  #  #  #  #  #  #      PARA ABANDONAR LA PARTIDA
+4   #  #  #  #  #  #  #  #      ESCRIBE "REINICIAR"
+3   #  #  #  #  #  #  #  #      PARA REINICIAR LA PARTIDA
 2   #  #  #  #  #  #  #  #
 1   #  ·  #  ·  #  ·  #  ·
     a  b  c  d  e  f  g  h

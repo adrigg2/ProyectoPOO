@@ -33,21 +33,8 @@ class Juego:
                 if j >= 0:
                     self.piezas.append(Pieza(Posicion(j, i), 2, self.tablero))
 
-    def inicio(self):
-        self.vista.bienvenida()
-
-        menu_principal: bool = True
-
-        while menu_principal:
-            opcion: int = self.vista.menu_principal()
-            if opcion == 1:
-                self.vista.intrucciones()
-            elif opcion == 2:
-                self.jugar()
-            else:
-                menu_principal = False
-
     def jugar(self):
+        self.vista.bienvenida()
         self.generar_piezas()
         for pieza in self.piezas:
             pieza.reportar_posicion()
@@ -68,6 +55,10 @@ class Juego:
                         if pieza.posicion == posicion_pieza:
                             posiciones_a_mover: list[str] = pieza.calcular_movimientos()
                             movimiento: str = self.vista.mostrar_movimientos(posiciones_a_mover)
+                            if movimiento == "abandonar":
+                                juego = False
+                                movimiento_elegido = True
+                                break
                             if movimiento != "atras":
                                 captura, posicion_captura = pieza.mover(movimiento)
                                 if captura:
@@ -75,8 +66,9 @@ class Juego:
                                 movimiento_elegido = True
                                 break
 
-                self.cambiar_turno()
-                juego = self.fin_de_juego()
+                if juego:
+                    self.cambiar_turno()
+                    juego = self.fin_de_juego()
             else:
                 juego = False
         self.vista.fin_de_juego(self.turno)
@@ -103,4 +95,4 @@ class Juego:
 
 if __name__ == "__main__":
     juego = Juego()
-    juego.inicio()
+    juego.jugar()
