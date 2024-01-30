@@ -83,9 +83,20 @@ class Pieza:
                         movimientos_validos.append(self.codificar_posicion(pos_objetivo))
                         self.lista_capturas.append([Posicion(i, 1), pos_captura.__copy__()]) #type:ignore
         else:
-            for i in range (-8, 9):
-                if i == 0:
-                    continue
+            for i in range(-1, -9, -1):
+                for j in range (-1, 1, 2):
+                    pos_objetivo: Posicion = self.posicion + Posicion(i, i * j) * self.direccion #type:ignore
+                    no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
+                    if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                        movimientos_validos.append(self.codificar_posicion(pos_objetivo))
+                    elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
+                        pos_captura: Posicion = pos_objetivo.__copy__() #type:ignore
+                        pos_objetivo += Posicion(i, i * j) * self.direccion #type: ignore
+                        no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
+                        if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                            movimientos_validos.append(self.codificar_posicion(pos_objetivo))
+                            self.lista_capturas.append([Posicion(i, 1), pos_captura.__copy__()]) #type:ignore
+            for i in range(1, 9):
                 for j in range (-1, 1, 2):
                     pos_objetivo: Posicion = self.posicion + Posicion(i, i * j) * self.direccion #type:ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
