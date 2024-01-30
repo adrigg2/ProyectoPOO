@@ -1,43 +1,42 @@
-4. Si un peón llega a la línea base del contrario (1-4 blanco, 29-32 negro), se convierte en 
-dama, coronándolo con otro peón.
-
 5. La dama mueve también en diagonal, pero adelante y atrás, pudiendo recorrer cualquier número 
 de casillas si están libres.
 
-6. La dama no puede saltar dos peones juntos o un peón de su color. En caso de peón de otro 
-color ver captura de piezas.
-
-7. Si después de realizado un salto, el peón llega a una casilla en las mismas condiciones de la 
+6. Si después de realizado un salto, el peón llega a una casilla en las mismas condiciones de la 
 anterior, puede continuar saltando y así todas las veces en las que esto sea posible (captura 
 múltiple).
 
-8. Si una dama se encuentra en turno y en la misma diagonal con una pieza contraria tras la cual 
+7. Si una dama se encuentra en turno y en la misma diagonal con una pieza contraria tras la cual 
 hay casillas vacías, puede saltar esta hasta quedar en cualquiera de las casillas vacías.
 
-9. Si después de realizado el salto anterior se vuelve a encontrar en otra diagonal con pieza 
+8. Si después de realizado el salto anterior se vuelve a encontrar en otra diagonal con pieza 
 contraria en las mismas condiciones, podrá proseguir los saltos todas las veces que esto fuese 
 posible (capturas múltiples).
 
-10. En capturas múltiples, en su misma diagonal puede saltar dos veces por encima de la misma 
+9. En capturas múltiples, en su misma diagonal puede saltar dos veces por encima de la misma 
 pieza.
 
-11. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
+10. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
 entonces pueden retirarse del tablero las piezas capturadas.
 
-12. Ley de la Cantidad: Es obligatorio capturar al mayor número posible de piezas.
+11. Ley de la Cantidad: Es obligatorio capturar al mayor número posible de piezas.
 
-13. Ley de la Calidad: A igual número de piezas a capturar, es obligatorio capturar a las de 
+12. Ley de la Calidad: A igual número de piezas a capturar, es obligatorio capturar a las de 
 mayor calidad, dama antes que peón.
 
-14. Un juego se considera perdido cuando un jugador:
+13. Un juego se considera perdido cuando un jugador:
 --    - Pierde todas sus piezas.
 --    - Tiene piezas, pero tocándole turno no tiene movimiento posible (c).
     - Abandone la partida.
 
-15. Un juego se considera empatado cuando:
+14. Un juego se considera empatado cuando:
     - Los jugadores lo acuerden.
     - Cuando una misma posición se dé tres veces, siendo el mismo jugador el que esté en turno de 
     juego y así se reclame.
+
+
+
+
+
 
 --# Si un jugador no puede mover, ha perdido.
 
@@ -49,3 +48,6 @@ principal a la derecha del jugador (esquina inferior derecha del tablero).
 
 --3. Los movimientos de los peones son en diagonal, una sola casilla y en sentido de avance, o sea, 
 hacia el campo oponente.
+
+-- 4. Si un peón llega a la línea base del contrario (1-4 blanco, 29-32 negro), se convierte en 
+dama, coronándolo con otro peón.

@@ -54,7 +54,6 @@ class Juego:
         juego: bool = True
         while juego:
             self.vista.mostrar_tablero(self.tablero.casillas)
-            print(self.tablero)
             piezas_movibles: list[Posicion] = []
             for pieza in self.piezas:
                 if pieza.jugador == self.turno:
