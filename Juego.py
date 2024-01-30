@@ -59,18 +59,21 @@ class Juego:
                 if pieza.jugador == self.turno:
                     if pieza.comprobar_movibilidad():
                         piezas_movibles.append(pieza.posicion)
-            pieza_a_mover: str = self.vista.mostrar_piezas_movibles(piezas_movibles)
-            posicion_pieza: Posicion = self.tablero.convertir_a_posicion(pieza_a_mover)
-
             if len(piezas_movibles) != 0:
-                for pieza in self.piezas:
-                    if pieza.posicion == posicion_pieza:
-                        posiciones_a_mover: list[str] = pieza.calcular_movimientos()
-                        movimiento: str = self.vista.mostrar_movimientos(posiciones_a_mover)
-                        captura, posicion_captura = pieza.mover(movimiento)
-                        if captura:
-                            self.captura(posicion_captura)
-                        break
+                movimiento_elegido: bool = False
+                while not movimiento_elegido:
+                    pieza_a_mover: str = self.vista.mostrar_piezas_movibles(piezas_movibles)
+                    posicion_pieza: Posicion = self.tablero.convertir_a_posicion(pieza_a_mover)
+                    for pieza in self.piezas:
+                        if pieza.posicion == posicion_pieza:
+                            posiciones_a_mover: list[str] = pieza.calcular_movimientos()
+                            movimiento: str = self.vista.mostrar_movimientos(posiciones_a_mover)
+                            if movimiento != "atras":
+                                captura, posicion_captura = pieza.mover(movimiento)
+                                if captura:
+                                    self.captura(posicion_captura)
+                                movimiento_elegido = True
+                                break
 
                 self.cambiar_turno()
                 juego = self.fin_de_juego()
