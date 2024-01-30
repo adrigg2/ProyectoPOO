@@ -109,6 +109,13 @@ class Pieza:
                         if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
                             movimientos_validos.append(self.codificar_posicion(pos_objetivo))
                             self.lista_capturas.append([Posicion(i, i * j), pos_captura.__copy__()]) #type:ignore
+        if len(self.lista_capturas) != 0:
+            for movimiento in movimientos_validos:
+                for captura in self.lista_capturas:
+                    if captura[1] == movimiento:
+                        break
+                else:
+                    movimientos_validos.remove(movimiento)
         return movimientos_validos
     
     def codificar_posicion(self, posicion: Posicion) -> str:
@@ -128,7 +135,6 @@ class Pieza:
         for captura in self.lista_capturas:
             print("Intentando captura")
             if (nueva_posicion - vieja_posicion).coord_x / captura[0].coord_x == (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y): #type:ignore
-            #if captura[0] * nueva_posicion == Posicion(abs(nueva_posicion.coord_x), abs(nueva_posicion.coord_y)):
                 print("Captura")
                 return True, captura[1]
         
