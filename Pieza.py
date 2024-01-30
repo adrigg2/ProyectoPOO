@@ -37,6 +37,9 @@ class Pieza:
             self.direccion = Posicion(1, -1)
             self.fila_promociones = [Posicion(1, 0), Posicion(3, 0), Posicion(5, 0), Posicion(7, 0)]
     
+    def reportar_posicion(self) -> None:
+        self.tablero.actualizar_tablero(self.posicion, self.id)
+
     def comprobar_movibilidad(self) -> bool:
         if not self.dama:
             for i in range (-1, 2, 2):
@@ -61,10 +64,7 @@ class Pieza:
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
                             return True
-        return False
-    
-    def reportar_posicion(self) -> None:
-        self.tablero.actualizar_tablero(self.posicion, self.id)
+        return False    
     
     def calcular_movimientos(self) -> list[str]:
         movimientos_validos: list[str] = []
@@ -95,7 +95,7 @@ class Pieza:
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
                             movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                            self.lista_capturas.append([Posicion(i, 1), pos_captura.__copy__()]) #type:ignore
+                            self.lista_capturas.append([Posicion(i, i * j), pos_captura.__copy__()]) #type:ignore
             for i in range(1, 9):
                 for j in range (-1, 1, 2):
                     pos_objetivo: Posicion = self.posicion + Posicion(i, i * j) * self.direccion #type:ignore
@@ -108,7 +108,7 @@ class Pieza:
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
                             movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                            self.lista_capturas.append([Posicion(i, 1), pos_captura.__copy__()]) #type:ignore
+                            self.lista_capturas.append([Posicion(i, i * j), pos_captura.__copy__()]) #type:ignore
         return movimientos_validos
     
     def codificar_posicion(self, posicion: Posicion) -> str:
