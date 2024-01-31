@@ -53,9 +53,9 @@ class Vista:
         print(resultado)
 
         pieza_a_mover: str = ""
-        while pieza_a_mover.lower() not in resultado.split():
+        while pieza_a_mover.lower() not in resultado.split() and pieza_a_mover.lower() != "abandonar":
             pieza_a_mover = input("Elige pieza a mover: ")
-            if pieza_a_mover.lower() not in resultado.split():
+            if pieza_a_mover.lower() not in resultado.split() and pieza_a_mover.lower() != "abandonar":
                 print("Esa no es una posición válida.")
 
         return pieza_a_mover.lower()

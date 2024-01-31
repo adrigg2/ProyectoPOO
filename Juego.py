@@ -50,6 +50,9 @@ class Juego:
                 movimiento_elegido: bool = False
                 while not movimiento_elegido:
                     pieza_a_mover: str = self.vista.mostrar_piezas_movibles(piezas_movibles)
+                    if pieza_a_mover == "abandonar":
+                        juego = False
+                        break
                     posicion_pieza: Posicion = self.tablero.convertir_a_posicion(pieza_a_mover)
                     for pieza in self.piezas:
                         if pieza.posicion == posicion_pieza:
