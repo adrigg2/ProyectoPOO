@@ -41,11 +41,26 @@ class Juego:
         juego: bool = True
         while juego:
             self.vista.mostrar_tablero(self.tablero.casillas)
-            piezas_movibles: list[Posicion] = []
+            situacion_piezas: list[tuple[Posicion, bool]] = []
             for pieza in self.piezas:
                 if pieza.jugador == self.turno:
-                    if pieza.comprobar_movibilidad():
-                        piezas_movibles.append(pieza.posicion)
+                    situacion_pieza: tuple[bool, bool] = pieza.comprobar_movilidad()
+                    if situacion_pieza[0]:
+                        situacion_piezas.append((pieza.posicion, situacion_pieza[1]))
+            
+            if self.comprobar_captura(situacion_piezas):
+                i: int = 0
+                while i < len(situacion_piezas):
+                    if not situacion_piezas[i][1]:
+                        del situacion_piezas[i]
+                    else:
+                        i += 1
+            
+            piezas_movibles: list[Posicion] = []
+            for pieza in situacion_piezas:
+                piezas_movibles.append(pieza[0])
+
+            
             if len(piezas_movibles) != 0:
                 movimiento_elegido: bool = False
                 while not movimiento_elegido:
@@ -93,6 +108,12 @@ class Juego:
     def fin_de_juego(self) -> bool:
         for pieza in self.piezas:
             if pieza.jugador == self.turno:
+                return True
+        return False
+    
+    def comprobar_captura(self, situacion_piezas: list[tuple[Posicion, bool]]) -> bool:
+        for pieza in situacion_piezas:
+            if pieza[1]:
                 return True
         return False
 
