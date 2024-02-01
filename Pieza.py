@@ -42,13 +42,15 @@ class Pieza:
 
     # Función para comprobar si una pieza puede moverse
     # Devuelve una tupla de booleans, [0] -> Puede moverse, [1] -> Puede capturar
+    # FIXME: Damas no reportan adecuadamente.
     def comprobar_movilidad(self) -> tuple[bool, bool]:
+        movilidad_sin_captura: bool = False
         if not self.dama:
             for i in range (-1, 2, 2):
                 pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
                 no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                 if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                    return True, False
+                    movilidad_sin_captura = True
                 elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
                     pos_objetivo += Posicion(i, 1) * self.direccion #type: ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
@@ -60,13 +62,13 @@ class Pieza:
                     pos_objetivo: Posicion = self.posicion + Posicion(i, i * j) * self.direccion #type:ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                     if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                        return True, False
+                        movilidad_sin_captura = True
                     elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
                         pos_objetivo += Posicion(i, j) * self.direccion #type: ignore
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
                             return True, True
-        return False, False
+        return movilidad_sin_captura, False
     
     def calcular_movimientos(self) -> list[str]:
         movimientos_validos: list[str] = []
