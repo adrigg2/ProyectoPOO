@@ -111,8 +111,9 @@ class Pieza:
                             self.lista_capturas.append([Posicion(i, i * j), pos_captura.__copy__()]) #type:ignore
         if len(self.lista_capturas) != 0:
             for movimiento in movimientos_validos:
+                pos_movimiento: Posicion = self.tablero.convertir_a_posicion(movimiento)
                 for captura in self.lista_capturas:
-                    if captura[1] == movimiento:
+                    if (pos_movimiento - self.posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y): #type:ignore
                         break
                 else:
                     movimientos_validos.remove(movimiento)

@@ -20,12 +20,12 @@ entonces pueden retirarse del tablero las piezas capturadas.
 12. Ley de la Calidad: A igual número de piezas a capturar, es obligatorio capturar a las de 
 mayor calidad, dama antes que peón.
 
-13. Un juego se considera perdido cuando un jugador:
---    - Pierde todas sus piezas.
---    - Tiene piezas, pero tocándole turno no tiene movimiento posible (c).
-    - Abandone la partida.
-
 14. Reinicio
+
+
+
+
+
 
 --# Si un jugador no puede mover, ha perdido.
 
@@ -38,8 +38,13 @@ principal a la derecha del jugador (esquina inferior derecha del tablero).
 --3. Los movimientos de los peones son en diagonal, una sola casilla y en sentido de avance, o sea, 
 hacia el campo oponente.
 
--- 4. Si un peón llega a la línea base del contrario (1-4 blanco, 29-32 negro), se convierte en 
+--4. Si un peón llega a la línea base del contrario (1-4 blanco, 29-32 negro), se convierte en 
 dama, coronándolo con otro peón.
 
 --5. La dama mueve también en diagonal, pero adelante y atrás, pudiendo recorrer cualquier número 
 de casillas si están libres.
+
+--13. Un juego se considera perdido cuando un jugador:
+--    - Pierde todas sus piezas.
+--    - Tiene piezas, pero tocándole turno no tiene movimiento posible (c).
+--    - Abandone la partida.
