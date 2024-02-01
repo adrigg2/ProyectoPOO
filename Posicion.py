@@ -43,3 +43,8 @@ if __name__ == "__main__":
     pos = Posicion(2, 2)
 
     print(pos != pos2)
+
+    try:
+        print(Posicion(1, 2) + 2)
+    except Exception:
+        print("ERROR")

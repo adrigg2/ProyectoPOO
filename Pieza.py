@@ -132,9 +132,9 @@ class Pieza:
         self.tablero.actualizar_tablero(self.posicion, self.id, vieja_posicion)
 
         for captura in self.lista_capturas:
-            print("Intentando captura")
-            if (nueva_posicion - vieja_posicion).coord_x / captura[0].coord_x == (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y): #type:ignore
-                print("Captura")
+            proporcion_x: float = (nueva_posicion - vieja_posicion).coord_x / captura[0].coord_x #type:ignore
+            proporcion_y: float = (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y) #type:ignore
+            if proporcion_x == proporcion_y:
                 return True, captura[1]
         
         return False, Posicion(-1, -1)
