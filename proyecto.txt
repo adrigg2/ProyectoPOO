@@ -48,3 +48,5 @@ de casillas si están libres.
 --    - Pierde todas sus piezas.
 --    - Tiene piezas, pero tocándole turno no tiene movimiento posible (c).
 --    - Abandone la partida.
+
+-- 15. Captura obligatoria

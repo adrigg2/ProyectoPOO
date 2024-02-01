@@ -74,43 +74,24 @@ class Pieza:
         if not self.dama:
             for i in range (-1, 2, 2):
                 pos_objetivo: Posicion = self.posicion + Posicion(i, 1) * self.direccion #type:ignore
-                no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                    movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
-                    pos_captura: Posicion = pos_objetivo.__copy__() #type:ignore
-                    pos_objetivo += Posicion(i, 1) * self.direccion #type: ignore
-                    no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                    if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                        movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                        self.lista_capturas.append([Posicion(i, 1), pos_captura.__copy__()]) #type:ignore
+                posible_movimiento = self.comprobar_posicion(pos_objetivo, i)
+                if posible_movimiento != "":
+                    movimientos_validos.append(posible_movimiento)
         else:
             for i in range(-1, -9, -1):
                 for j in range (-1, 1, 2):
                     pos_objetivo: Posicion = self.posicion + Posicion(i, i * j) * self.direccion #type:ignore
-                    no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                    if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                        movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                    elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
-                        pos_captura: Posicion = pos_objetivo.__copy__() #type:ignore
-                        pos_objetivo += Posicion(i, i * j) * self.direccion #type: ignore
-                        no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                        if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                            movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                            self.lista_capturas.append([Posicion(i, i * j), pos_captura.__copy__()]) #type:ignore
+                    posible_movimiento = self.comprobar_posicion(pos_objetivo, i, i * j)
+                    if posible_movimiento != "":
+                        movimientos_validos.append(posible_movimiento)
+
             for i in range(1, 9):
                 for j in range (-1, 1, 2):
                     pos_objetivo: Posicion = self.posicion + Posicion(i, i * j) * self.direccion #type:ignore
-                    no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                    if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                        movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                    elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
-                        pos_captura: Posicion = pos_objetivo.__copy__() #type:ignore
-                        pos_objetivo += Posicion(i, i * j) * self.direccion #type: ignore
-                        no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                        if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
-                            movimientos_validos.append(self.codificar_posicion(pos_objetivo))
-                            self.lista_capturas.append([Posicion(i, i * j), pos_captura.__copy__()]) #type:ignore
+                    posible_movimiento = self.comprobar_posicion(pos_objetivo, i, i * j)
+                    if posible_movimiento != "":
+                        movimientos_validos.append(posible_movimiento)
+
         if len(self.lista_capturas) != 0:
             for movimiento in movimientos_validos:
                 pos_movimiento: Posicion = self.tablero.convertir_a_posicion(movimiento)
@@ -120,6 +101,19 @@ class Pieza:
                 else:
                     movimientos_validos.remove(movimiento)
         return movimientos_validos
+    
+    def comprobar_posicion(self, posicion: Posicion, incremento_x: int, incremento_y: int = 1) -> str:
+        no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
+        if no_fuera_limites and self.tablero.comprobar_posicion(posicion) == 0:
+            return self.codificar_posicion(posicion)
+        elif no_fuera_limites and self.tablero.comprobar_posicion(posicion) // 10 != self.jugador:
+            pos_captura: Posicion = posicion.__copy__() #type:ignore
+            posicion += Posicion(incremento_x, incremento_y) * self.direccion #type: ignore
+            no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
+            if no_fuera_limites and self.tablero.comprobar_posicion(posicion) == 0:
+                self.lista_capturas.append([Posicion(incremento_x, incremento_y), pos_captura.__copy__()]) #type:ignore
+                return self.codificar_posicion(posicion)
+        return ""
     
     def codificar_posicion(self, posicion: Posicion) -> str:
         resultado = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y + 1)
