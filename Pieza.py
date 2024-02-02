@@ -125,7 +125,7 @@ class Pieza:
             posicion += Posicion(incremento_x, incremento_y).reducir_a_unidad() * self.direccion #type: ignore
             no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
             if no_fuera_limites and self.tablero.comprobar_posicion(posicion) == 0:
-                self.lista_capturas.append([Posicion(incremento_x, incremento_y), pos_captura.__copy__()]) #type:ignore
+                self.lista_capturas.append([Posicion(incremento_x, incremento_y).reducir_a_unidad(), pos_captura.__copy__()]) #type:ignore
                 return self.codificar_posicion(posicion)
         return ""
     

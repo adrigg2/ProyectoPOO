@@ -22,6 +22,16 @@ mayor calidad, dama antes que peón.
 
 14. Reinicio
 
+15. Modificación de cadenas
+
+16. Uso de ficheros (guardar partida?)
+
+17. Usar excepciones
+
+18. Privatizar campos
+
+19. Limpiar código y comentar
+
 
 
 
