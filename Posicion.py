@@ -22,6 +22,18 @@ class Posicion:
     
     def __copy__(self) -> object:
         return Posicion(self.coord_x, self.coord_y)
+    
+    def reducir_a_unidad(self) -> object:
+        coord_x: int = 1
+        coord_y: int = 1
+
+        if self.coord_x < 0:
+            coord_x = -1
+        
+        if self.coord_y < 0:
+            coord_y = -1
+
+        return Posicion(coord_x, coord_y)
 
 if __name__ == "__main__":
     pos = Posicion(1, 1)
