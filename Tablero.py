@@ -1,4 +1,4 @@
-from Posicion import Posicion
+from Vector import Vector
 
 class Tablero:
     casillas: list[list[int]]
@@ -37,14 +37,14 @@ class Tablero:
         
         return resultado
     
-    def comprobar_posicion(self, posicion: Posicion):
-        return self.casillas[posicion.coord_y][posicion.coord_x]
+    def comprobar_posicion(self, posicion: Vector):
+        return self.casillas[int(posicion.coord_y)][int(posicion.coord_x)]
     
-    def actualizar_tablero(self, posicion: Posicion, jugador: int, posicion_anterior: Posicion = Posicion(-1, -1)):
-        if posicion_anterior != Posicion(-1, -1):
-            self.casillas[posicion_anterior.coord_y][posicion_anterior.coord_x] = 0
-        if posicion != Posicion(-1, -1):
-            self.casillas[posicion.coord_y][posicion.coord_x] = jugador
+    def actualizar_tablero(self, posicion: Vector, jugador: int, posicion_anterior: Vector = Vector(-1, -1)):
+        if posicion_anterior != Vector(-1, -1):
+            self.casillas[int(posicion_anterior.coord_y)][int(posicion_anterior.coord_x)] = 0
+        if posicion != Vector(-1, -1):
+            self.casillas[int(posicion.coord_y)][int(posicion.coord_x)] = jugador
 
     def convertir_a_posicion(self, id_posicion: str):
         coordenadas: list[int] = []
@@ -53,15 +53,15 @@ class Tablero:
                 coordenadas.append(self.diccionario_columna[letra])
             elif letra.isnumeric():
                 coordenadas.append(int(letra) - 1)
-        return Posicion(coordenadas[0], coordenadas[1])
+        return Vector(coordenadas[0], coordenadas[1])
     
 if __name__ == "__main__":
     tablero = Tablero()
-    tablero.actualizar_tablero(Posicion(1, 1), 1)
+    tablero.actualizar_tablero(Vector(1, 1), 1)
     print(tablero)
     input()
-    tablero.actualizar_tablero(Posicion(3, 4), 1)
+    tablero.actualizar_tablero(Vector(3, 4), 1)
     print(tablero)
     input()
-    tablero.actualizar_tablero(Posicion(2, 2), 1, Posicion(1, 1))
+    tablero.actualizar_tablero(Vector(2, 2), 1, Vector(1, 1))
     print(tablero)

@@ -1,4 +1,4 @@
-from Posicion import Posicion
+from Vector import Vector
 
 class Vista:
     piezas: dict[int, str]
@@ -45,10 +45,10 @@ class Vista:
         resultado += "\n\ta  b  c  d  e  f  g  h\n"
         print(resultado)
 
-    def mostrar_piezas_movibles(self, posiciones: list[Posicion]) -> str:
+    def mostrar_piezas_movibles(self, posiciones: list[Vector]) -> str:
         resultado: str = ""
         for posicion in posiciones:
-            id_casilla = self.diccionario_columna[posicion.coord_x] + str(posicion.coord_y + 1)
+            id_casilla = self.diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
             resultado += id_casilla + "  "
         print(resultado)
 

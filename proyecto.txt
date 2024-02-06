@@ -22,15 +22,17 @@ mayor calidad, dama antes que peón.
 
 14. Reinicio
 
-15. Modificación de cadenas
+15. Captura obligatoria
 
-16. Uso de ficheros (guardar partida?)
+16. Modificación de cadenas
 
-17. Usar excepciones
+17. Uso de ficheros (guardar partida?)
 
-18. Privatizar campos
+18. Usar excepciones
 
-19. Limpiar código y comentar
+19. Privatizar campos
+
+20. Limpiar código y comentar
 
 
 
@@ -58,5 +60,3 @@ de casillas si están libres.
 --    - Pierde todas sus piezas.
 --    - Tiene piezas, pero tocándole turno no tiene movimiento posible (c).
 --    - Abandone la partida.
-
--- 15. Captura obligatoria

@@ -1,6 +1,6 @@
 from Pieza import Pieza
 from Tablero import Tablero
-from Posicion import Posicion
+from Vector import Vector
 from Vista import Vista
 
 class Juego:
@@ -26,12 +26,12 @@ class Juego:
         for i in range (3):
             for j in range(i - 1, 8, 2):
                 if j >= 0:
-                    self.piezas.append(Pieza(Posicion(j, i), 1, self.tablero))
+                    self.piezas.append(Pieza(Vector(j, i), 1, self.tablero))
 
         for i in range (5, 8):
             for j in range(i - 7, 8, 2):
                 if j >= 0:
-                    self.piezas.append(Pieza(Posicion(j, i), 2, self.tablero))
+                    self.piezas.append(Pieza(Vector(j, i), 2, self.tablero))
 
     def jugar(self):
         self.vista.bienvenida()
@@ -41,7 +41,7 @@ class Juego:
         juego: bool = True
         while juego:
             self.vista.mostrar_tablero(self.tablero.casillas)
-            situacion_piezas: list[tuple[Posicion, bool]] = []
+            situacion_piezas: list[tuple[Vector, bool]] = []
             for pieza in self.piezas:
                 if pieza.jugador == self.turno:
                     situacion_pieza: tuple[bool, bool] = pieza.comprobar_movilidad()
@@ -56,7 +56,7 @@ class Juego:
                     else:
                         i += 1
             
-            piezas_movibles: list[Posicion] = []
+            piezas_movibles: list[Vector] = []
             for pieza in situacion_piezas:
                 piezas_movibles.append(pieza[0])
 
@@ -68,7 +68,7 @@ class Juego:
                     if pieza_a_mover == "abandonar":
                         juego = False
                         break
-                    posicion_pieza: Posicion = self.tablero.convertir_a_posicion(pieza_a_mover)
+                    posicion_pieza: Vector = self.tablero.convertir_a_posicion(pieza_a_mover)
                     for pieza in self.piezas:
                         if pieza.posicion == posicion_pieza:
                             posiciones_a_mover: list[str] = pieza.calcular_movimientos()
@@ -98,7 +98,7 @@ class Juego:
             self.turno = 1
         
 
-    def captura(self, posicion: Posicion) -> None:
+    def captura(self, posicion: Vector) -> None:
         for pieza in self.piezas:
             if pieza.posicion == posicion:
                 pieza.capturar()
@@ -111,7 +111,7 @@ class Juego:
                 return True
         return False
     
-    def comprobar_captura(self, situacion_piezas: list[tuple[Posicion, bool]]) -> bool:
+    def comprobar_captura(self, situacion_piezas: list[tuple[Vector, bool]]) -> bool:
         for pieza in situacion_piezas:
             if pieza[1]:
                 return True
