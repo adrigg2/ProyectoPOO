@@ -46,31 +46,28 @@ class Vista:
         print(resultado)
 
     def mostrar_piezas_movibles(self, posiciones: list[Vector]) -> str:
-        resultado: str = ""
+        piezas_movibles: str = ""
         for posicion in posiciones:
-            id_casilla = self.diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
-            resultado += id_casilla + "  "
-        print(resultado)
+            id_casilla: str = self.diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
+            piezas_movibles += id_casilla + "  "
+        print(piezas_movibles)
 
         pieza_a_mover: str = ""
-        while pieza_a_mover.lower() not in resultado.split() and pieza_a_mover.lower() != "abandonar":
+        while pieza_a_mover.lower() not in piezas_movibles.split() and pieza_a_mover.lower() != "abandonar":
             pieza_a_mover = input("Elige pieza a mover: ")
-            if pieza_a_mover.lower() not in resultado.split() and pieza_a_mover.lower() != "abandonar":
+            if pieza_a_mover.lower() not in piezas_movibles.split() and pieza_a_mover.lower() != "abandonar":
                 print("Esa no es una posición válida.")
 
         return pieza_a_mover.lower()
     
     def mostrar_movimientos(self, posiciones: list[str]) -> str:
-        resultado: str = ""
-        for posicion in posiciones:
-            resultado += posicion
-            resultado += "  "
-        print(resultado)
+        movimientos_posibles: str = "  ".join(posiciones)
+        print(movimientos_posibles)
 
         posicion_a_mover: str = ""
-        while posicion_a_mover.lower() not in resultado.split() and posicion_a_mover.lower() != "atras" and posicion_a_mover.upper() != "ABANDONAR":
+        while posicion_a_mover.lower() not in movimientos_posibles.split() and posicion_a_mover.lower() != "atras" and posicion_a_mover.upper() != "ABANDONAR":
             posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ")
-            if posicion_a_mover.lower() not in resultado.split() and posicion_a_mover.lower() != "atras" and posicion_a_mover.upper() != "ABANDONAR":
+            if posicion_a_mover.lower() not in movimientos_posibles.split() and posicion_a_mover.lower() != "atras" and posicion_a_mover.upper() != "ABANDONAR":
                 print("Esa no es una posición válida.")
 
         return posicion_a_mover.lower()

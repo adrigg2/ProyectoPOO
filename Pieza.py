@@ -81,7 +81,6 @@ class Pieza:
                             return True, True
         return movilidad_sin_captura, False
     
-    #FIXME: Dama no captura correctamente
     #TODO: Captura multiple
     def calcular_movimientos(self) -> list[str]:
         movimientos_validos: list[str] = []
@@ -97,23 +96,36 @@ class Pieza:
                 for j in range (-1, 2, 2):
                     pos_objetivo: Vector = self.posicion + Vector(i, i * j) * self.direccion #type:ignore
                     posible_movimiento = self.comprobar_posicion(pos_objetivo, i, i * j)
-                    if posible_movimiento != "":
+                    if posible_movimiento != "" and posible_movimiento not in movimientos_validos:
                         movimientos_validos.append(posible_movimiento)
 
             for i in range(1, 9):
                 for j in range (-1, 2, 2):
                     pos_objetivo: Vector = self.posicion + Vector(i, i * j) * self.direccion #type:ignore
                     posible_movimiento = self.comprobar_posicion(pos_objetivo, i, i * j)
-                    if posible_movimiento != "":
+                    if posible_movimiento != "" and posible_movimiento not in movimientos_validos:
                         movimientos_validos.append(posible_movimiento)
 
-        #FIXME: Dama no reporta correctamente las capturas
-        if len(self.lista_capturas) != 0:
+        if len(self.lista_capturas) != 0 and not self.dama:
             for movimiento in movimientos_validos:
                 pos_movimiento: Vector = self.tablero.convertir_a_posicion(movimiento)
                 for captura in self.lista_capturas:
-                    if (pos_movimiento - self.posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y): #type:ignore
+                    vectores_proporcionales: bool = (pos_movimiento - self.posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y) #type:ignore
+                    if vectores_proporcionales:
                         break
+                else:
+                    movimientos_validos.remove(movimiento)
+        #FIXME: Dama no reporta correctamente las capturas -> Pieza en la misma direccion, dama solo debería capturar por detrás
+        elif len(self.lista_capturas) != 0 and self.dama:
+            for movimiento in movimientos_validos:
+                pos_movimiento: Vector = self.tablero.convertir_a_posicion(movimiento)
+                for captura in self.lista_capturas:
+                    vectores_proporcionales: bool = (pos_movimiento - self.posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y) #type:ignore
+                    if vectores_proporcionales:
+                        distancia_movimiento = pos_movimiento - self.posicion
+                        distancia_captura = captura[1] - self.posicion
+                        if distancia_movimiento > distancia_captura: #type:ignore
+                            break
                 else:
                     movimientos_validos.remove(movimiento)
         return movimientos_validos
