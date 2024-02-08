@@ -110,24 +110,27 @@ class Pieza:
             for movimiento in movimientos_validos:
                 pos_movimiento: Vector = self.tablero.convertir_a_posicion(movimiento)
                 for captura in self.lista_capturas:
-                    vectores_proporcionales: bool = (pos_movimiento - self.posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y) #type:ignore
-                    if vectores_proporcionales:
+                    misma_direccion: bool = (pos_movimiento - self.posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y) #type:ignore
+                    if misma_direccion:
                         break
                 else:
                     movimientos_validos.remove(movimiento)
         #FIXME: Dama no reporta correctamente las capturas -> Pieza en la misma direccion, dama solo debería capturar por detrás
         elif len(self.lista_capturas) != 0 and self.dama:
-            for movimiento in movimientos_validos:
-                pos_movimiento: Vector = self.tablero.convertir_a_posicion(movimiento)
+            i: int = 0
+            while i < len(movimientos_validos):
+                pos_movimiento: Vector = self.tablero.convertir_a_posicion(movimientos_validos[i])
                 for captura in self.lista_capturas:
-                    vectores_proporcionales: bool = (pos_movimiento - self.posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y) #type:ignore
-                    if vectores_proporcionales:
+                    producto_escalar: float = (pos_movimiento - self.posicion).normalizar().producto_escalar(captura[0].normalizar()) #type:ignore
+                    misma_direccion: bool = producto_escalar > 0.999 and producto_escalar < 1.001
+                    if misma_direccion:
                         distancia_movimiento = pos_movimiento - self.posicion
                         distancia_captura = captura[1] - self.posicion
                         if distancia_movimiento > distancia_captura: #type:ignore
+                            i += 1
                             break
                 else:
-                    movimientos_validos.remove(movimiento)
+                    del movimientos_validos[i]
         return movimientos_validos
     
     def comprobar_posicion(self, posicion: Vector, incremento_x: int, incremento_y: int = 1) -> str:

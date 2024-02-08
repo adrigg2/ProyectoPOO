@@ -40,6 +40,11 @@ class Vector:
             return not self < __value
         raise Exception("No se puede comparar Vector con otros objetos")
     
+    def producto_escalar(self, __value: object) -> float:
+        if type(__value) == Vector:
+            return self.coord_x * __value.coord_x + self.coord_y * __value.coord_y
+        raise Exception("El producto escalar solo puede realizarse entre 2 vectores.")
+
     def normalizar(self) -> object:
         modulo: float = sqrt(self.coord_x ** 2 + self.coord_y ** 2)
         return Vector(self.coord_x / modulo, self.coord_y / modulo)
