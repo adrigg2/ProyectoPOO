@@ -31,24 +31,30 @@ class Vista:
 
     def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
         print()
-        resultado = ""
+        filas: list[str] = []
+        texto_ayuda: list[str] = [
+            "\t ESCRIBE \"ABANDONAR\"",
+            "\t PARA ABANDONAR LA PARTIDA",
+            "\t ESCRIBE \"REINICIAR\"",
+            "\t PARA REINICIAR LA PARTIDA",
+            "\t ESCRIBE \"GUARDAR\"",
+            "\t PARA GUARDAR Y SALIR"
+        ]
+
         for fila in range(len(casillas_tablero) - 1, -1, -1):
-            resultado += f"{fila + 1}\t"
+            fila_string = f"{fila + 1}\t"
             for casilla in casillas_tablero[fila]:
                 if casilla == 0:
-                    resultado += "·  "
+                    fila_string += "·  "
                 else:
-                    resultado += f"{self.__piezas[casilla]}  "
-            if fila == 4:
-                resultado += "\t PARA ABANDONAR LA PARTIDA"
-            elif fila == 5:
-                resultado += "\t ESCRIBE \"ABANDONAR\""
-            elif fila == 2:
-                resultado += "\t PARA REINICIAR LA PARTIDA"
-            elif fila == 3:
-                resultado += "\t ESCRIBE \"REINICIAR\""
-            resultado += "\n"
-        resultado += "\n\ta  b  c  d  e  f  g  h\n"
+                    fila_string += f"{self.__piezas[casilla]}  "
+            filas.append(fila_string)
+        filas.append("\ta  b  c  d  e  f  g  h\n")
+
+        for i in range(1, 7):
+            filas[i] += texto_ayuda[i - 1]
+
+        resultado = "\n".join(filas)
         print(resultado)
 
     def mostrar_piezas_movibles(self, posiciones: list[Vector]) -> str:
