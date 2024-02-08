@@ -46,11 +46,11 @@ class Pieza:
             self.__direccion = Vector(1, -1)
             self.__fila_promociones = [Vector(1, 0), Vector(3, 0), Vector(5, 0), Vector(7, 0)]
     
-    # Función para reportar al tablero la posición inicial de la pieza
+    # Método para reportar al tablero la posición inicial de la pieza
     def reportar_posicion(self) -> None:
         self.__tablero.actualizar_tablero(self.__posicion, self.__id)
 
-    # Función para comprobar si una pieza puede moverse
+    # Método para comprobar si una pieza puede moverse
     # Devuelve una tupla de booleans, [0] -> Puede moverse, [1] -> Puede capturar
     def comprobar_movilidad(self) -> tuple[bool, bool]:
         movilidad_sin_captura: bool = False
@@ -94,7 +94,7 @@ class Pieza:
                             return True, True
         return movilidad_sin_captura, False
     
-    # Calcula los movimientos posibles de la pieza y los devuelve como una lista de strings
+    # Método para calcular los movimientos posibles de la pieza y devolverlos como una lista de strings
     def calcular_movimientos(self) -> list[str]:
         movimientos_validos: list[str] = []
         self.__lista_capturas = []
@@ -153,7 +153,7 @@ class Pieza:
                     del movimientos_validos[i]
         return movimientos_validos
     
-    # Función para comprobar si una posición está libre, ocupada por una pieza aliada o ocupada por una enemiga
+    # Método para comprobar si una posición está libre, ocupada por una pieza aliada o ocupada por una enemiga
     def comprobar_posicion(self, posicion: Vector, incremento_x: int, incremento_y: int = 1) -> str:
         no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
         if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
@@ -175,7 +175,7 @@ class Pieza:
         resultado = self.__diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
         return resultado
     
-    # Función para mover la pieza, devuelve una tupla de un bool y un vector
+    # Método para mover la pieza, devuelve una tupla de un bool y un vector
     # [0] -> Está capturando    [1] -> Posición a capturar
     def mover(self, movimiento: str) -> tuple[bool, Vector]:
         nueva_posicion = self.__tablero.convertir_a_posicion(movimiento)
@@ -196,13 +196,13 @@ class Pieza:
         
         return False, Vector(-1, -1)
 
-    # Función para capturar la pieza y eliminarla del tablero
+    # Método para capturar la pieza y eliminarla del tablero
     def capturar(self) -> None:
         vieja_posicion = Vector(self.__posicion.coord_x, self.__posicion.coord_y)
         self.__posicion = Vector(-1, -1)
         self.__tablero.actualizar_tablero(self.__posicion, self.__id, vieja_posicion)
     
-    # Función para promocionar la pieza a dama. Incrementa su id en 1 para facilitar su representación
+    # Método para promocionar la pieza a dama. Incrementa su id en 1 para facilitar su representación
     # en el tablero
     def promocionar(self) -> None:
         self.__dama = True

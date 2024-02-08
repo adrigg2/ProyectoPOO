@@ -30,7 +30,7 @@ class Tablero:
             'h' : 7
         }
     
-    # Función para mostrar el tablero sin formatear como cadena por pantalla
+    # Método para mostrar el tablero sin formatear como cadena por pantalla
     def __str__(self) -> str:
         resultado: str = ""
         for i in range(len(self.__casillas)):
@@ -41,11 +41,11 @@ class Tablero:
         
         return resultado
     
-    # Función para comprobar la ocupación de una casilla
+    # Método para comprobar la ocupación de una casilla
     def comprobar_posicion(self, posicion: Vector):
         return self.__casillas[int(posicion.coord_y)][int(posicion.coord_x)]
     
-    # Función para actualizar el tablero. Recibe la posición nueva de la pieza, su posición anterior y su id
+    # Método para actualizar el tablero. Recibe la posición nueva de la pieza, su posición anterior y su id
     # Vacía la posición anterior y ocupa la nueva posición con la id de la pieza
     def actualizar_tablero(self, posicion: Vector, id: int, posicion_anterior: Vector = Vector(-1, -1)):
         if posicion_anterior != Vector(-1, -1):
@@ -53,7 +53,7 @@ class Tablero:
         if posicion != Vector(-1, -1):
             self.__casillas[int(posicion.coord_y)][int(posicion.coord_x)] = id
 
-    # Función para convertir una posición en notación de tablero a un vector
+    # Método para convertir una posición en notación de tablero a un vector
     def convertir_a_posicion(self, id_posicion: str):
         coordenadas: list[int] = []
         for letra in id_posicion:
