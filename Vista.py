@@ -1,12 +1,18 @@
 from Vector import Vector
 
 class Vista:
-    piezas: dict[int, str]
-    diccionario_columna: dict[int, str]
+    __piezas: dict[int, str]
+    __diccionario_columna: dict[int, str]
 
-    def __init__(self, piezas: dict[int, str]) -> None:
-        self.piezas = piezas
-        self.diccionario_columna = {
+    def __init__(self) -> None:
+        self.__piezas = {
+            10 : "\033[91mo\033[00m",
+            20 : "\033[92mo\033[00m",
+            11 : "\033[91mO\033[00m",
+            21 : "\033[92mO\033[00m"
+        }
+
+        self.__diccionario_columna = {
             0 : 'a',
             1 : 'b',
             2 : 'c',
@@ -32,7 +38,7 @@ class Vista:
                 if casilla == 0:
                     resultado += "·  "
                 else:
-                    resultado += f"{self.piezas[casilla]}  "
+                    resultado += f"{self.__piezas[casilla]}  "
             if fila == 4:
                 resultado += "\t PARA ABANDONAR LA PARTIDA"
             elif fila == 5:
@@ -48,7 +54,7 @@ class Vista:
     def mostrar_piezas_movibles(self, posiciones: list[Vector]) -> str:
         piezas_movibles: str = ""
         for posicion in posiciones:
-            id_casilla: str = self.diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
+            id_casilla: str = self.__diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
             piezas_movibles += id_casilla + "  "
         print(piezas_movibles)
 

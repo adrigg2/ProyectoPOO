@@ -12,14 +12,7 @@ class Juego:
     def __init__(self) -> None:
         self.tablero = Tablero()
         self.piezas = []
-
-        piezas = {
-            10 : "\033[91mo\033[00m",
-            20 : "\033[92mo\033[00m",
-            11 : "\033[91mO\033[00m",
-            21 : "\033[92mO\033[00m"
-        }
-        self.vista = Vista(piezas)
+        self.vista = Vista()
         self.turno = 1
 
     def generar_piezas(self) -> None:

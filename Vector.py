@@ -13,19 +13,19 @@ class Vector:
     def __add__(self, __value: object) -> object:
         if type(__value) == Vector:
             return Vector(self.coord_x + __value.coord_x, self.coord_y + __value.coord_y)
-        raise Exception("No se puede sumar Vector con otros objetos.")
+        raise ValueError("No se puede sumar Vector con otros objetos.")
     
     def __sub__(self, __value: object) -> object:
         if type(__value) == Vector:
             return self + Vector(-__value.coord_x, -__value.coord_y)
-        raise Exception("No se puede restar Vector con otros objetos.")
+        raise ValueError("No se puede restar Vector con otros objetos.")
     
     def __mul__(self, __value: object) -> object:
         if type(__value) == Vector:
             return Vector(self.coord_x * __value.coord_x, self.coord_y * __value.coord_y)
         if type(__value) == int or type(__value) == float:
             return Vector(self.coord_x * __value, self.coord_y * __value)
-        raise Exception("Solo se puede multiplicar Vector por otra Vector o por un número.")
+        raise ValueError("Solo se puede multiplicar Vector por otra Vector o por un número.")
     
     def __copy__(self) -> object:
         return Vector(self.coord_x, self.coord_y)
@@ -33,17 +33,17 @@ class Vector:
     def __lt__(self, __value: object) -> object:
         if type(__value) == Vector:
             return self.modulo < __value.modulo
-        raise Exception("No se puede comparar Vector con otros objetos")
+        raise ValueError("No se puede comparar Vector con otros objetos")
     
     def __gt__(self, __value: object) -> object:
         if type(__value) == Vector:
             return not self < __value
-        raise Exception("No se puede comparar Vector con otros objetos")
+        raise ValueError("No se puede comparar Vector con otros objetos")
     
     def producto_escalar(self, __value: object) -> float:
         if type(__value) == Vector:
             return self.coord_x * __value.coord_x + self.coord_y * __value.coord_y
-        raise Exception("El producto escalar solo puede realizarse entre 2 vectores.")
+        raise ValueError("El producto escalar solo puede realizarse entre 2 vectores.")
 
     def normalizar(self) -> object:
         modulo: float = sqrt(self.coord_x ** 2 + self.coord_y ** 2)

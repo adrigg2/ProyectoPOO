@@ -3,22 +3,30 @@ from Vector import Vector
 from math import sqrt
 
 class Pieza:
-    posicion: Vector
-    direccion: Vector
-    dama: bool
-    jugador: int
-    id: int
-    tablero: Tablero
-    diccionario_columna: dict[int, str]
-    lista_capturas: list[list[Vector]]
-    fila_promociones: list[Vector]
+    __posicion: Vector
+    __direccion: Vector
+    __dama: bool
+    __jugador: int
+    __id: int
+    __tablero: Tablero
+    __diccionario_columna: dict[int, str]
+    __lista_capturas: list[list[Vector]]
+    __fila_promociones: list[Vector]
+
+    @property
+    def posicion(self):
+        return self.__posicion
+    
+    @property
+    def jugador(self):
+        return self.__jugador
 
     def __init__(self, posicion: Vector, jugador: int, tablero: Tablero) -> None:
-        self.posicion = posicion
-        self.dama = False
-        self.jugador = jugador
-        self.tablero = tablero
-        self.diccionario_columna = {
+        self.__posicion = posicion
+        self.__dama = False
+        self.__jugador = jugador
+        self.__tablero = tablero
+        self.__diccionario_columna = {
             0 : 'a',
             1 : 'b',
             2 : 'c',
@@ -28,104 +36,116 @@ class Pieza:
             6 : 'g',
             7 : 'h'
         }
-        self.lista_capturas = []
-        self.id = self.jugador * 10
+        self.__lista_capturas = []
+        self.__id = self.__jugador * 10
 
-        if self.jugador == 1:
-            self.direccion = Vector(1, 1)
-            self.fila_promociones = [Vector(0, 7), Vector(2, 7), Vector(4, 7), Vector(6, 7)]
-        elif self.jugador == 2:
-            self.direccion = Vector(1, -1)
-            self.fila_promociones = [Vector(1, 0), Vector(3, 0), Vector(5, 0), Vector(7, 0)]
+        if self.__jugador == 1:
+            self.__direccion = Vector(1, 1)
+            self.__fila_promociones = [Vector(0, 7), Vector(2, 7), Vector(4, 7), Vector(6, 7)]
+        elif self.__jugador == 2:
+            self.__direccion = Vector(1, -1)
+            self.__fila_promociones = [Vector(1, 0), Vector(3, 0), Vector(5, 0), Vector(7, 0)]
     
+    # Función para reportar al tablero la posición inicial de la pieza
     def reportar_posicion(self) -> None:
-        self.tablero.actualizar_tablero(self.posicion, self.id)
+        self.__tablero.actualizar_tablero(self.__posicion, self.__id)
 
     # Función para comprobar si una pieza puede moverse
     # Devuelve una tupla de booleans, [0] -> Puede moverse, [1] -> Puede capturar
     def comprobar_movilidad(self) -> tuple[bool, bool]:
         movilidad_sin_captura: bool = False
-        if not self.dama:
+
+        # Si no es dama, comprueba las casillas a 1 posición de distancia en diagonal hacia delante
+        if not self.__dama:
             for i in range (-1, 2, 2):
-                pos_objetivo: Vector = self.posicion + Vector(i, 1) * self.direccion #type:ignore
+                pos_objetivo: Vector = self.__posicion + Vector(i, 1) * self.__direccion #type:ignore
                 no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                     movilidad_sin_captura = True
-                elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
-                    pos_objetivo += Vector(i, 1) * self.direccion #type: ignore
+                elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 10 != self.__jugador:
+                    pos_objetivo += Vector(i, 1) * self.__direccion #type: ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                    if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                    if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                         return True, True
+                    
+        #Si es dama, comprueba todas las casillas en diagonal
         else:
             for i in range (-1, -9, -1):
                 for j in range (-1, 2, 2):
-                    pos_objetivo: Vector = self.posicion + Vector(i, i * j) * self.direccion #type:ignore
+                    pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                    if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                    if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                         movilidad_sin_captura = True
-                    elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
-                        pos_objetivo += Vector(i, i * j).normalizar() * sqrt(2) * self.direccion #type: ignore
+                    elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 10 != self.__jugador:
+                        pos_objetivo += Vector(i, i * j).normalizar() * sqrt(2) * self.__direccion #type: ignore
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                        if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                        if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                             return True, True
             for i in range (1, 9):
                 for j in range (-1, 2, 2):
-                    pos_objetivo: Vector = self.posicion + Vector(i, i * j) * self.direccion #type:ignore
+                    pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                    if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                    if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                         movilidad_sin_captura = True
-                    elif no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) // 10 != self.jugador:
-                        pos_objetivo += Vector(i, i * j).normalizar() * sqrt(2) * self.direccion #type: ignore
+                    elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 10 != self.__jugador:
+                        pos_objetivo += Vector(i, i * j).normalizar() * sqrt(2) * self.__direccion #type: ignore
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
-                        if no_fuera_limites and self.tablero.comprobar_posicion(pos_objetivo) == 0:
+                        if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                             return True, True
         return movilidad_sin_captura, False
     
-    #TODO: Captura multiple
+    # Calcula los movimientos posibles de la pieza y los devuelve como una lista de strings
     def calcular_movimientos(self) -> list[str]:
         movimientos_validos: list[str] = []
-        self.lista_capturas = []
-        if not self.dama:
+        self.__lista_capturas = []
+
+        # Si no es dama, comprueba las casillas a 1 posición de distancia en diagonal hacia delante
+        if not self.__dama:
             for i in range (-1, 2, 2):
-                pos_objetivo: Vector = self.posicion + Vector(i, 1) * self.direccion #type:ignore
+                pos_objetivo: Vector = self.__posicion + Vector(i, 1) * self.__direccion #type:ignore
                 posible_movimiento = self.comprobar_posicion(pos_objetivo, i)
                 if posible_movimiento != "":
                     movimientos_validos.append(posible_movimiento)
+
+        #Si es dama, comprueba todas las casillas en diagonal
         else:
             for i in range(-1, -9, -1):
                 for j in range (-1, 2, 2):
-                    pos_objetivo: Vector = self.posicion + Vector(i, i * j) * self.direccion #type:ignore
+                    pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
                     posible_movimiento = self.comprobar_posicion(pos_objetivo, i, i * j)
                     if posible_movimiento != "" and posible_movimiento not in movimientos_validos:
                         movimientos_validos.append(posible_movimiento)
 
             for i in range(1, 9):
                 for j in range (-1, 2, 2):
-                    pos_objetivo: Vector = self.posicion + Vector(i, i * j) * self.direccion #type:ignore
+                    pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
                     posible_movimiento = self.comprobar_posicion(pos_objetivo, i, i * j)
                     if posible_movimiento != "" and posible_movimiento not in movimientos_validos:
                         movimientos_validos.append(posible_movimiento)
 
-        if len(self.lista_capturas) != 0 and not self.dama:
-            for movimiento in movimientos_validos:
-                pos_movimiento: Vector = self.tablero.convertir_a_posicion(movimiento)
-                for captura in self.lista_capturas:
-                    misma_direccion: bool = (pos_movimiento - self.posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y) #type:ignore
-                    if misma_direccion:
-                        break
-                else:
-                    movimientos_validos.remove(movimiento)
-        #FIXME: Dama no reporta correctamente las capturas -> Pieza en la misma direccion, dama solo debería capturar por detrás
-        elif len(self.lista_capturas) != 0 and self.dama:
+        # Si existe la posibilidad de captura, elimina los movimientos que no impliquen una captura
+        if len(self.__lista_capturas) != 0 and not self.__dama:
             i: int = 0
             while i < len(movimientos_validos):
-                pos_movimiento: Vector = self.tablero.convertir_a_posicion(movimientos_validos[i])
-                for captura in self.lista_capturas:
-                    producto_escalar: float = (pos_movimiento - self.posicion).normalizar().producto_escalar(captura[0].normalizar()) #type:ignore
+                pos_movimiento: Vector = self.__tablero.convertir_a_posicion(movimientos_validos[i])
+                for captura in self.__lista_capturas:
+                    misma_direccion: bool = (pos_movimiento - self.__posicion).coord_x / captura[0].coord_x == (pos_movimiento - self.__posicion).coord_y / (captura[0].coord_y * self.__direccion.coord_y) #type:ignore
+                    if misma_direccion:
+                        i += 1
+                        break
+                else:
+                    del movimientos_validos[i]
+        
+        elif len(self.__lista_capturas) != 0 and self.__dama:
+            i: int = 0
+            while i < len(movimientos_validos):
+                pos_movimiento: Vector = self.__tablero.convertir_a_posicion(movimientos_validos[i])
+                for captura in self.__lista_capturas:
+                    producto_escalar: float = (pos_movimiento - self.__posicion).normalizar().producto_escalar(captura[0].normalizar()) #type:ignore
                     misma_direccion: bool = producto_escalar > 0.999 and producto_escalar < 1.001
                     if misma_direccion:
-                        distancia_movimiento = pos_movimiento - self.posicion
-                        distancia_captura = captura[1] - self.posicion
+                        distancia_movimiento = pos_movimiento - self.__posicion
+                        distancia_captura = captura[1] - self.__posicion
                         if distancia_movimiento > distancia_captura: #type:ignore
                             i += 1
                             break
@@ -133,49 +153,60 @@ class Pieza:
                     del movimientos_validos[i]
         return movimientos_validos
     
+    # Función para comprobar si una posición está libre, ocupada por una pieza aliada o ocupada por una enemiga
     def comprobar_posicion(self, posicion: Vector, incremento_x: int, incremento_y: int = 1) -> str:
         no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
-        if no_fuera_limites and self.tablero.comprobar_posicion(posicion) == 0:
+        if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
             return self.codificar_posicion(posicion)
-        elif no_fuera_limites and self.tablero.comprobar_posicion(posicion) // 10 != self.jugador:
+        
+        # Si la casilla está ocupada por una pieza enemiga, comprueba si la siguiente está vacía y, por tanto
+        # si se puede capturar.
+        elif no_fuera_limites and self.__tablero.comprobar_posicion(posicion) // 10 != self.__jugador:
             pos_captura: Vector = posicion.__copy__() #type:ignore
-            posicion += Vector(incremento_x, incremento_y).normalizar() * sqrt(2) * self.direccion #type: ignore
+            posicion += Vector(incremento_x, incremento_y).normalizar() * sqrt(2) * self.__direccion #type: ignore
             no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
-            if no_fuera_limites and self.tablero.comprobar_posicion(posicion) == 0:
-                self.lista_capturas.append([Vector(incremento_x, incremento_y).normalizar() * sqrt(2), pos_captura.__copy__()]) #type:ignore
+            if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
+                self.__lista_capturas.append([Vector(incremento_x, incremento_y).normalizar() * sqrt(2), pos_captura.__copy__()]) #type:ignore
                 return self.codificar_posicion(posicion)
         return ""
     
+    # Función para convertir una posición en Vector a una cadena en notación del tablero
     def codificar_posicion(self, posicion: Vector) -> str:
-        resultado = self.diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
+        resultado = self.__diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
         return resultado
     
+    # Función para mover la pieza, devuelve una tupla de un bool y un vector
+    # [0] -> Está capturando    [1] -> Posición a capturar
     def mover(self, movimiento: str) -> tuple[bool, Vector]:
-        nueva_posicion = self.tablero.convertir_a_posicion(movimiento)
-        vieja_posicion = Vector(self.posicion.coord_x, self.posicion.coord_y)
-        self.posicion = nueva_posicion
+        nueva_posicion = self.__tablero.convertir_a_posicion(movimiento)
+        vieja_posicion = Vector(self.__posicion.coord_x, self.__posicion.coord_y)
+        self.__posicion = nueva_posicion
 
-        if self.posicion in self.fila_promociones:
+        # Si la pieza alcanza el final del tablero y no es una dama, promociona a dama
+        if self.__posicion in self.__fila_promociones and not self.__dama:
             self.promocionar()
         
-        self.tablero.actualizar_tablero(self.posicion, self.id, vieja_posicion)
+        self.__tablero.actualizar_tablero(self.__posicion, self.__id, vieja_posicion)
 
-        for captura in self.lista_capturas:
+        for captura in self.__lista_capturas:
             proporcion_x: float = (nueva_posicion - vieja_posicion).coord_x / captura[0].coord_x #type:ignore
-            proporcion_y: float = (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.direccion.coord_y) #type:ignore
+            proporcion_y: float = (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.__direccion.coord_y) #type:ignore
             if proporcion_x == proporcion_y:
                 return True, captura[1]
         
         return False, Vector(-1, -1)
 
+    # Función para capturar la pieza y eliminarla del tablero
     def capturar(self) -> None:
-        vieja_posicion = Vector(self.posicion.coord_x, self.posicion.coord_y)
-        self.posicion = Vector(-1, -1)
-        self.tablero.actualizar_tablero(self.posicion, self.id, vieja_posicion)
+        vieja_posicion = Vector(self.__posicion.coord_x, self.__posicion.coord_y)
+        self.__posicion = Vector(-1, -1)
+        self.__tablero.actualizar_tablero(self.__posicion, self.__id, vieja_posicion)
     
+    # Función para promocionar la pieza a dama. Incrementa su id en 1 para facilitar su representación
+    # en el tablero
     def promocionar(self) -> None:
-        self.dama = True
-        self.id += 1
+        self.__dama = True
+        self.__id += 1
 
 if __name__ == "__main__":
     pieza1 = Pieza(Vector(1, 1), 1, Tablero())
