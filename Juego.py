@@ -4,39 +4,39 @@ from Vector import Vector
 from Vista import Vista
 
 class Juego:
-    tablero: Tablero
-    piezas: list[Pieza]
-    vista: Vista
-    turno: int
+    __tablero: Tablero
+    __piezas: list[Pieza]
+    __vista: Vista
+    __turno: int
 
     def __init__(self) -> None:
-        self.tablero = Tablero()
-        self.piezas = []
-        self.vista = Vista()
-        self.turno = 1
+        self.__tablero = Tablero()
+        self.__piezas = []
+        self.__vista = Vista()
+        self.__turno = 1
 
     def generar_piezas(self) -> None:
         for i in range (3):
             for j in range(i - 1, 8, 2):
                 if j >= 0:
-                    self.piezas.append(Pieza(Vector(j, i), 1, self.tablero))
+                    self.__piezas.append(Pieza(Vector(j, i), 1, self.__tablero))
 
         for i in range (5, 8):
             for j in range(i - 7, 8, 2):
                 if j >= 0:
-                    self.piezas.append(Pieza(Vector(j, i), 2, self.tablero))
+                    self.__piezas.append(Pieza(Vector(j, i), 2, self.__tablero))
 
     def jugar(self):
-        self.vista.bienvenida()
+        self.__vista.bienvenida()
         self.generar_piezas()
-        for pieza in self.piezas:
+        for pieza in self.__piezas:
             pieza.reportar_posicion()
         juego: bool = True
         while juego:
-            self.vista.mostrar_tablero(self.tablero.casillas)
+            self.__vista.mostrar_tablero(self.__tablero.casillas)
             situacion_piezas: list[tuple[Vector, bool]] = []
-            for pieza in self.piezas:
-                if pieza.jugador == self.turno:
+            for pieza in self.__piezas:
+                if pieza.jugador == self.__turno:
                     situacion_pieza: tuple[bool, bool] = pieza.comprobar_movilidad()
                     if situacion_pieza[0]:
                         situacion_piezas.append((pieza.posicion, situacion_pieza[1]))
@@ -57,15 +57,15 @@ class Juego:
             if len(piezas_movibles) != 0:
                 movimiento_elegido: bool = False
                 while not movimiento_elegido:
-                    pieza_a_mover: str = self.vista.mostrar_piezas_movibles(piezas_movibles)
+                    pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles)
                     if pieza_a_mover == "abandonar":
                         juego = False
                         break
-                    posicion_pieza: Vector = self.tablero.convertir_a_posicion(pieza_a_mover)
-                    for pieza in self.piezas:
+                    posicion_pieza: Vector = self.__tablero.convertir_a_posicion(pieza_a_mover)
+                    for pieza in self.__piezas:
                         if pieza.posicion == posicion_pieza:
                             posiciones_a_mover: list[str] = pieza.calcular_movimientos()
-                            movimiento: str = self.vista.mostrar_movimientos(posiciones_a_mover)
+                            movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover)
                             if movimiento == "abandonar":
                                 juego = False
                                 movimiento_elegido = True
@@ -82,25 +82,25 @@ class Juego:
                     juego = self.fin_de_juego()
             else:
                 juego = False
-        self.vista.fin_de_juego(self.turno)
+        self.__vista.fin_de_juego(self.__turno)
     
     def cambiar_turno(self) -> None:
-        if self.turno == 1:
-            self.turno = 2
+        if self.__turno == 1:
+            self.__turno = 2
         else:
-            self.turno = 1
+            self.__turno = 1
         
 
     def captura(self, posicion: Vector) -> None:
-        for pieza in self.piezas:
+        for pieza in self.__piezas:
             if pieza.posicion == posicion:
                 pieza.capturar()
-                self.piezas.remove(pieza)
+                self.__piezas.remove(pieza)
                 return
             
     def fin_de_juego(self) -> bool:
-        for pieza in self.piezas:
-            if pieza.jugador == self.turno:
+        for pieza in self.__piezas:
+            if pieza.jugador == self.__turno:
                 return True
         return False
     
