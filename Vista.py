@@ -3,6 +3,7 @@ from Vector import Vector
 class Vista:
     __piezas: dict[int, str]
     __diccionario_columna: dict[int, str]
+    __palabras_clave: list[str]
 
     def __init__(self) -> None:
         self.__piezas = {
@@ -22,6 +23,12 @@ class Vista:
             6 : 'g',
             7 : 'h'
         }
+
+        self.__palabras_clave = [
+            "abandonar",
+            "reiniciar",
+            "guardar"
+        ]
 
     def bienvenida(self) -> None:
         print("Bienvenid@ al juego de las damas\n")
@@ -65,9 +72,9 @@ class Vista:
         print(piezas_movibles)
 
         pieza_a_mover: str = ""
-        while pieza_a_mover.lower() not in piezas_movibles.split() and pieza_a_mover.lower() != "abandonar":
-            pieza_a_mover = input("Elige pieza a mover: ")
-            if pieza_a_mover.lower() not in piezas_movibles.split() and pieza_a_mover.lower() != "abandonar":
+        while pieza_a_mover not in piezas_movibles.split() and pieza_a_mover not in self.__palabras_clave:
+            pieza_a_mover = input("Elige pieza a mover: ").lower()
+            if pieza_a_mover not in piezas_movibles.split() and pieza_a_mover not in self.__palabras_clave:
                 print("Esa no es una posición válida.")
 
         return pieza_a_mover.lower()
@@ -77,12 +84,12 @@ class Vista:
         print(movimientos_posibles)
 
         posicion_a_mover: str = ""
-        while posicion_a_mover.lower() not in movimientos_posibles.split() and posicion_a_mover.lower() != "atras" and posicion_a_mover.upper() != "ABANDONAR":
-            posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ")
-            if posicion_a_mover.lower() not in movimientos_posibles.split() and posicion_a_mover.lower() != "atras" and posicion_a_mover.upper() != "ABANDONAR":
+        while posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
+            posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ").lower()
+            if posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
                 print("Esa no es una posición válida.")
 
-        return posicion_a_mover.lower()
+        return posicion_a_mover
     
     def fin_de_juego(self, perdedor: int):
         if perdedor == 1:

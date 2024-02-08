@@ -9,28 +9,14 @@ hay casillas vacías, puede saltar esta hasta quedar en cualquiera de las casill
 contraria en las mismas condiciones, podrá proseguir los saltos todas las veces que esto fuese 
 posible (capturas múltiples).
 
-9. En capturas múltiples, en su misma diagonal puede saltar dos veces por encima de la misma 
-pieza.
-
-10. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
+9. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
 entonces pueden retirarse del tablero las piezas capturadas.
 
-11. Ley de la Cantidad: Es obligatorio capturar al mayor número posible de piezas.
+11. Reinicio
 
-12. Ley de la Calidad: A igual número de piezas a capturar, es obligatorio capturar a las de 
-mayor calidad, dama antes que peón.
+14. Uso de ficheros (guardar partida)
 
-14. Reinicio
-
-16. Modificación de cadenas
-
-17. Uso de ficheros (guardar partida?)
-
-18. Usar excepciones
-
-19. Privatizar campos
-
-20. Limpiar código y comentar
+17. Limpiar código y comentar
 
 
 
@@ -54,9 +40,15 @@ dama, coronándolo con otro peón.
 --5. La dama mueve también en diagonal, pero adelante y atrás, pudiendo recorrer cualquier número 
 de casillas si están libres.
 
---13. Un juego se considera perdido cuando un jugador:
+--10. Un juego se considera perdido cuando un jugador:
 --    - Pierde todas sus piezas.
 --    - Tiene piezas, pero tocándole turno no tiene movimiento posible (c).
 --    - Abandone la partida.
 
--- 15. Captura obligatoria
+--12. Captura obligatoria
+
+--13. Modificación de cadenas
+
+--15. Usar excepciones
+
+--16. Privatizar campos

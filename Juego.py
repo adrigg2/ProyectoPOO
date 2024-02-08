@@ -26,8 +26,14 @@ class Juego:
                 if j >= 0:
                     self.__piezas.append(Pieza(Vector(j, i), 2, self.__tablero))
 
-    def jugar(self):
+    def inicio(self):
+        jugar: bool = True
+        
         self.__vista.bienvenida()
+        while jugar:
+            jugar = self.jugar()
+
+    def jugar(self) -> bool:
         self.generar_piezas()
         for pieza in self.__piezas:
             pieza.reportar_posicion()
@@ -61,6 +67,10 @@ class Juego:
                     if pieza_a_mover == "abandonar":
                         juego = False
                         break
+                    elif pieza_a_mover == "reiniciar":
+                        self.reiniciar_juego()
+                        return True
+                    
                     posicion_pieza: Vector = self.__tablero.convertir_a_posicion(pieza_a_mover)
                     for pieza in self.__piezas:
                         if pieza.posicion == posicion_pieza:
@@ -70,6 +80,10 @@ class Juego:
                                 juego = False
                                 movimiento_elegido = True
                                 break
+                            elif pieza_a_mover == "reiniciar":
+                                self.reiniciar_juego()
+                                return True
+                            
                             if movimiento != "atras":
                                 captura, posicion_captura = pieza.mover(movimiento)
                                 if captura:
@@ -83,6 +97,7 @@ class Juego:
             else:
                 juego = False
         self.__vista.fin_de_juego(self.__turno)
+        return False
     
     def cambiar_turno(self) -> None:
         if self.__turno == 1:
@@ -97,6 +112,12 @@ class Juego:
                 pieza.capturar()
                 self.__piezas.remove(pieza)
                 return
+            
+    def reiniciar_juego(self) -> None:
+        self.__tablero = Tablero()
+        self.__piezas = []
+        self.__vista = Vista()
+        self.__turno = 1
             
     def fin_de_juego(self) -> bool:
         for pieza in self.__piezas:
