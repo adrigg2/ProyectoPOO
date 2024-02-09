@@ -91,24 +91,30 @@ class Juego:
                     # puede realizar
                     for pieza in self.__piezas:
                         if pieza.posicion == posicion_pieza:
-                            posiciones_a_mover: list[str] = pieza.calcular_movimientos()
-                            movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover)
+                            continuar_captura: bool = True
+                            primer_movimiento: bool = True
+                            while continuar_captura:
+                                posiciones_a_mover: list[str] = pieza.calcular_movimientos()
+                                movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
 
-                            # Comprueba si el jugador ha decidido abandonar o reiniciar
-                            if movimiento == "abandonar":
-                                juego = False
-                                movimiento_elegido = True
-                                break
-                            elif pieza_a_mover == "reiniciar":
-                                self.reiniciar_juego()
-                                return True
-                            
-                            if movimiento != "atras":
-                                captura, posicion_captura = pieza.mover(movimiento)
-                                if captura:
-                                    self.captura(posicion_captura)
-                                movimiento_elegido = True
-                                break
+                                # Comprueba si el jugador ha decidido abandonar o reiniciar
+                                if movimiento == "abandonar":
+                                    juego = False
+                                    movimiento_elegido = True
+                                    break
+                                elif pieza_a_mover == "reiniciar":
+                                    self.reiniciar_juego()
+                                    return True
+                                
+                                if movimiento != "atras":
+                                    captura: bool
+                                    posicion_captura: Vector
+                                    captura, posicion_captura, continuar_captura = pieza.mover(movimiento)
+                                    primer_movimiento = False
+                                    if captura:
+                                        self.captura(posicion_captura)
+                                    movimiento_elegido = True
+                            break
 
                 if juego:
                     self.cambiar_turno()
@@ -116,7 +122,7 @@ class Juego:
             # Si el jugador no puede mover ninguna pieza, ha perdido
             else:
                 juego = False
-        # Una vez el juego ha terminado, se muestra la pantalla de fin de juego
+        # Una vez el juego ha terminado, se muestra la pantalla de fin de juego (solo si no se ha reiniciado)
         self.__vista.fin_de_juego(self.__turno)
         return False
     

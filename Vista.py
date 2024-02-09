@@ -32,10 +32,8 @@ class Vista:
 
     def bienvenida(self) -> None:
         print("Bienvenid@ al juego de las damas\n")
-    
-    def intrucciones(self) -> None:
-        input("Presiona enter para continuar")
 
+    # Método para mostrar el tablero en pantalla
     def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
         print()
         filas: list[str] = []
@@ -48,6 +46,7 @@ class Vista:
             "\t PARA GUARDAR Y SALIR"
         ]
 
+        # Analiza las casillas de la lista de int que recibe como parámetro y la convierte en caracteres
         for fila in range(len(casillas_tablero) - 1, -1, -1):
             fila_string = f"{fila + 1}\t"
             for casilla in casillas_tablero[fila]:
@@ -58,6 +57,7 @@ class Vista:
             filas.append(fila_string)
         filas.append("\ta  b  c  d  e  f  g  h\n")
 
+        # Coloca el texto de ayuda centrado en el tablero
         for i in range(1, 7):
             filas[i] += texto_ayuda[i - 1]
 
@@ -79,13 +79,16 @@ class Vista:
 
         return pieza_a_mover.lower()
     
-    def mostrar_movimientos(self, posiciones: list[str]) -> str:
+    def mostrar_movimientos(self, posiciones: list[str], primer_movimiento: bool) -> str:
         movimientos_posibles: str = "  ".join(posiciones)
         print(movimientos_posibles)
 
         posicion_a_mover: str = ""
         while posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
-            posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ").lower()
+            if primer_movimiento:
+                posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ").lower()
+            else:
+                posicion_a_mover = input("Puedes seguir capturando. Elige posición para mover la pieza: ").lower()
             if posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
                 print("Esa no es una posición válida.")
 

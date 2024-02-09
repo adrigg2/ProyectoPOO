@@ -1,22 +1,9 @@
-6. Si después de realizado un salto, el peón llega a una casilla en las mismas condiciones de la 
-anterior, puede continuar saltando y así todas las veces en las que esto sea posible (captura 
-múltiple).
-
-7. Si una dama se encuentra en turno y en la misma diagonal con una pieza contraria tras la cual 
-hay casillas vacías, puede saltar esta hasta quedar en cualquiera de las casillas vacías.
-
-8. Si después de realizado el salto anterior se vuelve a encontrar en otra diagonal con pieza 
-contraria en las mismas condiciones, podrá proseguir los saltos todas las veces que esto fuese 
-posible (capturas múltiples).
-
-9. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
+8. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
 entonces pueden retirarse del tablero las piezas capturadas.
 
-11. Reinicio
+13. Uso de ficheros (guardar partida)
 
-14. Uso de ficheros (guardar partida)
-
-17. Limpiar código y comentar
+16. Limpiar código y comentar
 
 
 
@@ -40,15 +27,24 @@ dama, coronándolo con otro peón.
 --5. La dama mueve también en diagonal, pero adelante y atrás, pudiendo recorrer cualquier número 
 de casillas si están libres.
 
---10. Un juego se considera perdido cuando un jugador:
+--9. Un juego se considera perdido cuando un jugador:
 --    - Pierde todas sus piezas.
 --    - Tiene piezas, pero tocándole turno no tiene movimiento posible (c).
 --    - Abandone la partida.
 
---12. Captura obligatoria
+--11. Captura obligatoria
 
---13. Modificación de cadenas
+--12. Modificación de cadenas
 
---15. Usar excepciones
+--14. Usar excepciones
 
---16. Privatizar campos
+--15. Privatizar campos
+
+--10. Reinicio
+
+--7. Si una dama se encuentra en turno y en la misma diagonal con una pieza contraria tras la cual 
+hay casillas vacías, puede saltar esta hasta quedar en cualquiera de las casillas vacías.
+
+--6. Si después de realizado un salto, el peón o dama llega a una casilla en las mismas condiciones 
+de la anterior, puede continuar saltando y así todas las veces en las que esto sea posible (captura 
+múltiple).

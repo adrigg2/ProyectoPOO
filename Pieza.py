@@ -51,7 +51,7 @@ class Pieza:
         self.__tablero.actualizar_tablero(self.__posicion, self.__id)
 
     # Método para comprobar si una pieza puede moverse
-    # Devuelve una tupla de booleans, [0] -> Puede moverse, [1] -> Puede capturar
+    # Devuelve una tupla de bools, [0] -> Puede moverse, [1] -> Puede capturar
     def comprobar_movilidad(self) -> tuple[bool, bool]:
         movilidad_sin_captura: bool = False
 
@@ -134,8 +134,7 @@ class Pieza:
                         i += 1
                         break
                 else:
-                    del movimientos_validos[i]
-        
+                    del movimientos_validos[i]        
         elif len(self.__lista_capturas) != 0 and self.__dama:
             i: int = 0
             while i < len(movimientos_validos):
@@ -176,8 +175,8 @@ class Pieza:
         return resultado
     
     # Método para mover la pieza, devuelve una tupla de un bool y un vector
-    # [0] -> Está capturando    [1] -> Posición a capturar
-    def mover(self, movimiento: str) -> tuple[bool, Vector]:
+    # [0] -> Está capturando    [1] -> Posición a capturar  [2] -> Puede seguir capturando
+    def mover(self, movimiento: str) -> tuple[bool, Vector, bool]:
         nueva_posicion = self.__tablero.convertir_a_posicion(movimiento)
         vieja_posicion = Vector(self.__posicion.coord_x, self.__posicion.coord_y)
         self.__posicion = nueva_posicion
@@ -192,9 +191,11 @@ class Pieza:
             proporcion_x: float = (nueva_posicion - vieja_posicion).coord_x / captura[0].coord_x #type:ignore
             proporcion_y: float = (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.__direccion.coord_y) #type:ignore
             if proporcion_x == proporcion_y:
-                return True, captura[1]
+                if self.comprobar_movilidad()[1]:
+                    return True, captura[1], True
+                return True, captura[1], False
         
-        return False, Vector(-1, -1)
+        return False, Vector(-1, -1), False
 
     # Método para capturar la pieza y eliminarla del tablero
     def capturar(self) -> None:
