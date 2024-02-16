@@ -70,7 +70,7 @@ class Juego:
                 piezas_movibles.append(pieza[0])
 
             # Si el jugador puede mover piezas, continúa el juego
-            if len(piezas_movibles) != 0:
+            if piezas_movibles:
                 movimiento_elegido: bool = False
 
                 # Repite el bucle mientras no se elija un movimiento
@@ -109,11 +109,16 @@ class Juego:
                                 if movimiento != "atras":
                                     captura: bool
                                     posicion_captura: Vector
-                                    captura, posicion_captura, continuar_captura = pieza.mover(movimiento)
+                                    captura, posicion_captura = pieza.mover(movimiento)
                                     primer_movimiento = False
                                     if captura:
                                         self.captura(posicion_captura)
+                                        continuar_captura = pieza.comprobar_movilidad()[1]
+                                    else:
+                                        continuar_captura = False
                                     movimiento_elegido = True
+                                else:
+                                    continuar_captura = False
                             break
 
                 if juego:

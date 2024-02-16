@@ -69,6 +69,7 @@ class Pieza:
                         return True, True
                     
         #Si es dama, comprueba todas las casillas en diagonal
+        #FIXME: dama declara posibilidad de captura cuando no debe
         else:
             for i in range (-1, -9, -1):
                 for j in range (-1, 2, 2):
@@ -81,6 +82,8 @@ class Pieza:
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                             return True, True
+                        else:
+                            return movilidad_sin_captura, False
             for i in range (1, 9):
                 for j in range (-1, 2, 2):
                     pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
@@ -92,6 +95,8 @@ class Pieza:
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                             return True, True
+                        else:
+                            return movilidad_sin_captura, False
         return movilidad_sin_captura, False
     
     # Método para calcular los movimientos posibles de la pieza y devolverlos como una lista de strings
@@ -108,6 +113,7 @@ class Pieza:
                     movimientos_validos.append(posible_movimiento)
 
         #Si es dama, comprueba todas las casillas en diagonal
+        #FIXME: dama declara posiciones no válidas
         else:
             for i in range(-1, -9, -1):
                 for j in range (-1, 2, 2):
@@ -124,7 +130,7 @@ class Pieza:
                         movimientos_validos.append(posible_movimiento)
 
         # Si existe la posibilidad de captura, elimina los movimientos que no impliquen una captura
-        if len(self.__lista_capturas) != 0 and not self.__dama:
+        if self.__lista_capturas and not self.__dama:
             i: int = 0
             while i < len(movimientos_validos):
                 pos_movimiento: Vector = self.__tablero.convertir_a_posicion(movimientos_validos[i])
@@ -135,7 +141,7 @@ class Pieza:
                         break
                 else:
                     del movimientos_validos[i]        
-        elif len(self.__lista_capturas) != 0 and self.__dama:
+        elif self.__lista_capturas and self.__dama:
             i: int = 0
             while i < len(movimientos_validos):
                 pos_movimiento: Vector = self.__tablero.convertir_a_posicion(movimientos_validos[i])
@@ -175,8 +181,8 @@ class Pieza:
         return resultado
     
     # Método para mover la pieza, devuelve una tupla de un bool y un vector
-    # [0] -> Está capturando    [1] -> Posición a capturar  [2] -> Puede seguir capturando
-    def mover(self, movimiento: str) -> tuple[bool, Vector, bool]:
+    # [0] -> Está capturando    [1] -> Posición a capturar 
+    def mover(self, movimiento: str) -> tuple[bool, Vector]:
         nueva_posicion = self.__tablero.convertir_a_posicion(movimiento)
         vieja_posicion = Vector(self.__posicion.coord_x, self.__posicion.coord_y)
         self.__posicion = nueva_posicion
@@ -191,11 +197,9 @@ class Pieza:
             proporcion_x: float = (nueva_posicion - vieja_posicion).coord_x / captura[0].coord_x #type:ignore
             proporcion_y: float = (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.__direccion.coord_y) #type:ignore
             if proporcion_x == proporcion_y:
-                if self.comprobar_movilidad()[1]:
-                    return True, captura[1], True
-                return True, captura[1], False
+                return True, captura[1]
         
-        return False, Vector(-1, -1), False
+        return False, Vector(-1, -1)
 
     # Método para capturar la pieza y eliminarla del tablero
     def capturar(self) -> None:

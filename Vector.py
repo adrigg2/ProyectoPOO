@@ -11,19 +11,19 @@ class Vector:
         return sqrt(self.coord_x ** 2 + self.coord_y ** 2)
 
     def __add__(self, __value: object) -> object:
-        if type(__value) == Vector:
+        if isinstance(__value, Vector):
             return Vector(self.coord_x + __value.coord_x, self.coord_y + __value.coord_y)
         raise ValueError("No se puede sumar Vector con otros objetos.")
     
     def __sub__(self, __value: object) -> object:
-        if type(__value) == Vector:
+        if isinstance(__value, Vector):
             return self + Vector(-__value.coord_x, -__value.coord_y)
         raise ValueError("No se puede restar Vector con otros objetos.")
     
     def __mul__(self, __value: object) -> object:
-        if type(__value) == Vector:
+        if isinstance(__value, Vector):
             return Vector(self.coord_x * __value.coord_x, self.coord_y * __value.coord_y)
-        if type(__value) == int or type(__value) == float:
+        if isinstance(__value, int) or isinstance(__value, float):
             return Vector(self.coord_x * __value, self.coord_y * __value)
         raise ValueError("Solo se puede multiplicar Vector por otra Vector o por un número.")
     
@@ -31,17 +31,17 @@ class Vector:
         return Vector(self.coord_x, self.coord_y)
     
     def __lt__(self, __value: object) -> object:
-        if type(__value) == Vector:
+        if isinstance(__value, Vector):
             return self.modulo < __value.modulo
         raise ValueError("No se puede comparar Vector con otros objetos")
     
     def __gt__(self, __value: object) -> object:
-        if type(__value) == Vector:
+        if isinstance(__value, Vector):
             return not self < __value
         raise ValueError("No se puede comparar Vector con otros objetos")
     
     def producto_escalar(self, __value: object) -> float:
-        if type(__value) == Vector:
+        if isinstance(__value, Vector):
             return self.coord_x * __value.coord_x + self.coord_y * __value.coord_y
         raise ValueError("El producto escalar solo puede realizarse entre 2 vectores.")
 

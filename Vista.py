@@ -84,13 +84,16 @@ class Vista:
         print(movimientos_posibles)
 
         posicion_a_mover: str = ""
-        while posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
-            if primer_movimiento:
+        if primer_movimiento:
+            while posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
                 posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ").lower()
-            else:
+                if posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
+                    print("Esa no es una posición válida.")
+        else:
+            while posicion_a_mover not in posiciones:
                 posicion_a_mover = input("Puedes seguir capturando. Elige posición para mover la pieza: ").lower()
-            if posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
-                print("Esa no es una posición válida.")
+                if posicion_a_mover not in posiciones:
+                    print("Esa no es una posición válida.")
 
         return posicion_a_mover
     
