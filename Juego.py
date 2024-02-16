@@ -42,6 +42,7 @@ class Juego:
         for pieza in self.__piezas:
             pieza.reportar_posicion()
         juego: bool = True
+        partida_guardada: bool = False
         while juego:
             self.__vista.mostrar_tablero(self.__tablero.casillas)
             situacion_piezas: list[tuple[Vector, bool]] = []
@@ -84,6 +85,11 @@ class Juego:
                     elif pieza_a_mover == "reiniciar":
                         self.reiniciar_juego()
                         return True
+                    elif pieza_a_mover == "guardar":
+                        self.guardar_partida()
+                        juego = False
+                        partida_guardada = True
+                        break
                     
                     posicion_pieza: Vector = self.__tablero.convertir_a_posicion(pieza_a_mover)
 
@@ -102,9 +108,15 @@ class Juego:
                                     juego = False
                                     movimiento_elegido = True
                                     break
-                                elif pieza_a_mover == "reiniciar":
+                                elif movimiento == "reiniciar":
                                     self.reiniciar_juego()
                                     return True
+                                elif movimiento == "guardar":
+                                    self.guardar_partida()
+                                    juego = False
+                                    movimiento_elegido = True
+                                    partida_guardada = True
+                                    break
                                 
                                 if movimiento != "atras":
                                     captura: bool
@@ -128,7 +140,8 @@ class Juego:
             else:
                 juego = False
         # Una vez el juego ha terminado, se muestra la pantalla de fin de juego (solo si no se ha reiniciado)
-        self.__vista.fin_de_juego(self.__turno)
+        if not partida_guardada:
+            self.__vista.fin_de_juego(self.__turno)
         return False
     
     def cambiar_turno(self) -> None:
@@ -168,6 +181,26 @@ class Juego:
             if pieza[1]:
                 return True
         return False
+    
+    # Método que gestiona el guardado de la partida
+    def guardar_partida(self) -> None:
+        archivo_guardado = open("partida_guardada.txt", "w", encoding="utf-8")
+        archivo_guardado.close()
+
+        archivo_guardado = open("partida_guardada.txt", "a", encoding="utf-8")
+
+        casillas_tablero: list[str] = []
+
+        for i in range(len(self.__tablero.casillas)):
+            fila = ""
+            for j in range(len(self.__tablero.casillas[i])):
+                fila += str(self.__tablero.casillas[i][j]) + " "
+            fila += "\n"
+            casillas_tablero.append(fila)
+
+        archivo_guardado.writelines(casillas_tablero)
+        archivo_guardado.write(f"\n{self.__turno}")
+        archivo_guardado.close()
 
 if __name__ == "__main__":
     juego = Juego()

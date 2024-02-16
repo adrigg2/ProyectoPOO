@@ -63,6 +63,12 @@ class Tablero:
                 coordenadas.append(int(letra) - 1)
         return Vector(coordenadas[0], coordenadas[1])
     
+    # Método para convertir una posición en Vector a una cadena en notación del tablero
+    def codificar_posicion(self, posicion: Vector) -> str:
+        columnas = list(self.__diccionario_columna.keys())
+        resultado = columnas[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
+        return resultado
+    
 if __name__ == "__main__":
     tablero = Tablero()
     tablero.actualizar_tablero(Vector(1, 1), 1)

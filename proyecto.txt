@@ -1,12 +1,6 @@
-8. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
-entonces pueden retirarse del tablero las piezas capturadas.
-
 13. Uso de ficheros (guardar partida)
 
 16. Limpiar código y comentar
-
-
-
 
 
 
@@ -48,3 +42,6 @@ hay casillas vacías, puede saltar esta hasta quedar en cualquiera de las casill
 --6. Si después de realizado un salto, el peón o dama llega a una casilla en las mismas condiciones 
 de la anterior, puede continuar saltando y así todas las veces en las que esto sea posible (captura 
 múltiple).
+
+--8. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
+entonces pueden retirarse del tablero las piezas capturadas.

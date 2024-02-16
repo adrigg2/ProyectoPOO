@@ -69,38 +69,58 @@ class Pieza:
                         return True, True
                     
         #Si es dama, comprueba todas las casillas en diagonal
-        #FIXME: dama declara posibilidad de captura cuando no debe
         else:
-            for i in range (-1, -9, -1):
-                for j in range (-1, 2, 2):
-                    pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
+            for i in range(-1, 2, 2):
+                for j in range(-1, -9, -1):
+                    pos_objetivo: Vector = self.__posicion + Vector(j, j * i) * self.__direccion #type:ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                     if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                         movilidad_sin_captura = True
                     elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 10 != self.__jugador:
-                        pos_objetivo += Vector(i, i * j).normalizar() * sqrt(2) * self.__direccion #type: ignore
+                        pos_objetivo += Vector(j, j * i).normalizar() * sqrt(2) * self.__direccion #type: ignore
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                             return True, True
                         else:
-                            return movilidad_sin_captura, False
-            for i in range (1, 9):
-                for j in range (-1, 2, 2):
-                    pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
+                            break
+            
+            for i in range(-1, 2, 2):
+                for j in range(1, 9):
+                    pos_objetivo: Vector = self.__posicion + Vector(j, j * i) * self.__direccion #type:ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                     if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                         movilidad_sin_captura = True
                     elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 10 != self.__jugador:
-                        pos_objetivo += Vector(i, i * j).normalizar() * sqrt(2) * self.__direccion #type: ignore
+                        pos_objetivo += Vector(j, j * i).normalizar() * sqrt(2) * self.__direccion #type: ignore
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                             return True, True
                         else:
-                            return movilidad_sin_captura, False
+                            break
+
         return movilidad_sin_captura, False
     
     # Método para calcular los movimientos posibles de la pieza y devolverlos como una lista de strings
     def calcular_movimientos(self) -> list[str]:
+        # Función para comprobar si una posición está libre, ocupada por una pieza aliada o ocupada por una enemiga
+        # Devuelve una cadena vacía si la posición está ocupada por una pieza enemiga que no se puede capturar
+        # Devuelve una posición como cadena si la posición está disponible
+        def comprobar_posicion(posicion: Vector, incremento_x: int, incremento_y: int = 1) -> str:
+            no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
+            if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
+                return self.__tablero.codificar_posicion(posicion)
+            
+            # Si la casilla está ocupada por una pieza enemiga, comprueba si la siguiente está vacía y, por tanto
+            # si se puede capturar.
+            elif no_fuera_limites and self.__tablero.comprobar_posicion(posicion) // 10 != self.__jugador:
+                pos_captura: Vector = posicion.__copy__() #type:ignore
+                posicion += Vector(incremento_x, incremento_y).normalizar() * sqrt(2) * self.__direccion #type: ignore
+                no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
+                if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
+                    self.__lista_capturas.append([Vector(incremento_x, incremento_y).normalizar() * sqrt(2), pos_captura.__copy__()]) #type:ignore
+                    return self.__tablero.codificar_posicion(posicion)
+            return ""
+        
         movimientos_validos: list[str] = []
         self.__lista_capturas = []
 
@@ -108,26 +128,29 @@ class Pieza:
         if not self.__dama:
             for i in range (-1, 2, 2):
                 pos_objetivo: Vector = self.__posicion + Vector(i, 1) * self.__direccion #type:ignore
-                posible_movimiento = self.comprobar_posicion(pos_objetivo, i)
+                posible_movimiento = comprobar_posicion(pos_objetivo, i)
                 if posible_movimiento != "":
                     movimientos_validos.append(posible_movimiento)
 
         #Si es dama, comprueba todas las casillas en diagonal
-        #FIXME: dama declara posiciones no válidas
         else:
-            for i in range(-1, -9, -1):
-                for j in range (-1, 2, 2):
-                    pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
-                    posible_movimiento = self.comprobar_posicion(pos_objetivo, i, i * j)
+            for i in range(-1, 2, 2):
+                for j in range(-1, -9, -1):
+                    pos_objetivo: Vector = self.__posicion + Vector(j, j * i) * self.__direccion #type:ignore
+                    posible_movimiento = comprobar_posicion(pos_objetivo, j, j * i)
                     if posible_movimiento != "" and posible_movimiento not in movimientos_validos:
                         movimientos_validos.append(posible_movimiento)
+                    elif posible_movimiento == "":
+                        break
 
-            for i in range(1, 9):
-                for j in range (-1, 2, 2):
-                    pos_objetivo: Vector = self.__posicion + Vector(i, i * j) * self.__direccion #type:ignore
-                    posible_movimiento = self.comprobar_posicion(pos_objetivo, i, i * j)
+            for i in range(-1, 2, 2):
+                for j in range(1, 9):
+                    pos_objetivo: Vector = self.__posicion + Vector(j, j * i) * self.__direccion #type:ignore
+                    posible_movimiento = comprobar_posicion(pos_objetivo, j, j * i)
                     if posible_movimiento != "" and posible_movimiento not in movimientos_validos:
                         movimientos_validos.append(posible_movimiento)
+                    elif posible_movimiento == "":
+                        break
 
         # Si existe la posibilidad de captura, elimina los movimientos que no impliquen una captura
         if self.__lista_capturas and not self.__dama:
@@ -157,28 +180,6 @@ class Pieza:
                 else:
                     del movimientos_validos[i]
         return movimientos_validos
-    
-    # Método para comprobar si una posición está libre, ocupada por una pieza aliada o ocupada por una enemiga
-    def comprobar_posicion(self, posicion: Vector, incremento_x: int, incremento_y: int = 1) -> str:
-        no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
-        if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
-            return self.codificar_posicion(posicion)
-        
-        # Si la casilla está ocupada por una pieza enemiga, comprueba si la siguiente está vacía y, por tanto
-        # si se puede capturar.
-        elif no_fuera_limites and self.__tablero.comprobar_posicion(posicion) // 10 != self.__jugador:
-            pos_captura: Vector = posicion.__copy__() #type:ignore
-            posicion += Vector(incremento_x, incremento_y).normalizar() * sqrt(2) * self.__direccion #type: ignore
-            no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
-            if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
-                self.__lista_capturas.append([Vector(incremento_x, incremento_y).normalizar() * sqrt(2), pos_captura.__copy__()]) #type:ignore
-                return self.codificar_posicion(posicion)
-        return ""
-    
-    # Función para convertir una posición en Vector a una cadena en notación del tablero
-    def codificar_posicion(self, posicion: Vector) -> str:
-        resultado = self.__diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
-        return resultado
     
     # Método para mover la pieza, devuelve una tupla de un bool y un vector
     # [0] -> Está capturando    [1] -> Posición a capturar 

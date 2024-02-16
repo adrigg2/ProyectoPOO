@@ -3,7 +3,7 @@ from Vector import Vector
 class Vista:
     __piezas: dict[int, str]
     __diccionario_columna: dict[int, str]
-    __palabras_clave: list[str]
+    __palabras_clave: tuple[str, str, str]
 
     def __init__(self) -> None:
         self.__piezas = {
@@ -24,11 +24,11 @@ class Vista:
             7 : 'h'
         }
 
-        self.__palabras_clave = [
+        self.__palabras_clave = (
             "abandonar",
             "reiniciar",
             "guardar"
-        ]
+        )
 
     def bienvenida(self) -> None:
         print("Bienvenid@ al juego de las damas\n")
@@ -37,14 +37,14 @@ class Vista:
     def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
         print()
         filas: list[str] = []
-        texto_ayuda: list[str] = [
+        texto_ayuda: tuple[str, str, str, str, str, str] = (
             "\t ESCRIBE \"ABANDONAR\"",
             "\t PARA ABANDONAR LA PARTIDA",
             "\t ESCRIBE \"REINICIAR\"",
             "\t PARA REINICIAR LA PARTIDA",
             "\t ESCRIBE \"GUARDAR\"",
             "\t PARA GUARDAR Y SALIR"
-        ]
+        )
 
         # Analiza las casillas de la lista de int que recibe como parámetro y la convierte en caracteres
         for fila in range(len(casillas_tablero) - 1, -1, -1):
@@ -90,9 +90,11 @@ class Vista:
                 if posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
                     print("Esa no es una posición válida.")
         else:
-            while posicion_a_mover not in posiciones:
+            while posicion_a_mover not in posiciones and posicion_a_mover not in self.__palabras_clave[:2]:
                 posicion_a_mover = input("Puedes seguir capturando. Elige posición para mover la pieza: ").lower()
-                if posicion_a_mover not in posiciones:
+                if posicion_a_mover == "guardar":
+                    print(f"Solo se puede guardar al principio del turno")
+                elif posicion_a_mover not in posiciones and posicion_a_mover not in self.__palabras_clave[:2]:
                     print("Esa no es una posición válida.")
 
         return posicion_a_mover
