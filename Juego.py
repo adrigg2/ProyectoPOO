@@ -55,7 +55,8 @@ class Juego:
     # Método que gestiona la ejecución del juego
     # Devuelve un bool que indica si la partida debe reiniciarse o no
     def jugar(self) -> bool:
-        self.generar_piezas()
+        if not self.__piezas:
+            self.generar_piezas()
         for pieza in self.__piezas:
             pieza.reportar_posicion()
         juego: bool = True
@@ -240,24 +241,24 @@ class Juego:
                 for i, linea in enumerate(casillas_guardadas):
                     for j, casilla in enumerate(linea):
                         if casilla == 10:
-                            pieza: Pieza = Pieza(Vector(i, j), casilla // 10, self.__tablero)
+                            pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero)
                             self.__piezas.append(pieza)
                         elif casilla == 11:
-                            pieza: Pieza = Pieza(Vector(i, j), casilla // 10, self.__tablero, True)
+                            pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, True)
                             self.__piezas.append(pieza)
                         elif casilla == 20:
-                            pieza: Pieza = Pieza(Vector(i, j), casilla // 10, self.__tablero)
+                            pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero)
                             self.__piezas.append(pieza)
                         elif casilla == 21:
-                            pieza: Pieza = Pieza(Vector(i, j), casilla // 10, self.__tablero, True)
+                            pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, True)
                             self.__piezas.append(pieza)
             return True
 
         except FileNotFoundError:
-            print("No hay ninguna partida guardada.")
+            print("\nNo hay ninguna partida guardada.\n")
             return False
         except Exception:
-            print("El archivo está corrupto.")
+            print("\nEl archivo está corrupto.\n")
             return False
 
 if __name__ == "__main__":
