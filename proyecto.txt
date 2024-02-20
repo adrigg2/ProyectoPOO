@@ -1,6 +1,9 @@
 13. Uso de ficheros (guardar partida)
 
+14. Usar excepciones
+
 16. Limpiar código y comentar
+
 
 
 
@@ -29,8 +32,6 @@ de casillas si están libres.
 --11. Captura obligatoria
 
 --12. Modificación de cadenas
-
---14. Usar excepciones
 
 --15. Privatizar campos
 

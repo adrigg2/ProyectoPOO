@@ -28,10 +28,27 @@ class Juego:
                     self.__piezas.append(Pieza(Vector(j, i), 2, self.__tablero))
 
     # Método para gestionar el inicio y los reinicios del juego
-    def inicio(self):
-        jugar: bool = True
+    def inicio(self) -> None:
+        menu_inicio: bool = True
+        jugar: bool = False
 
         self.__vista.bienvenida()
+
+        while menu_inicio:
+            try:
+                opcion_elegida: int = self.__vista.menu_inicio()
+                if opcion_elegida == 1:
+                    jugar = True
+                    menu_inicio = False
+                elif opcion_elegida == 2:
+                    if self.cargar_partida():
+                        jugar = True
+                        menu_inicio = False
+                elif opcion_elegida == 3:
+                    menu_inicio = False
+            except:
+                print("La opción elegida no es correcta.")
+
         while jugar:
             jugar = self.jugar()
 
@@ -183,24 +200,65 @@ class Juego:
         return False
     
     # Método que gestiona el guardado de la partida
+    # Guarda las casillas del tablero en su forma de int y el turno al final marcado con una T
     def guardar_partida(self) -> None:
-        archivo_guardado = open("partida_guardada.txt", "w", encoding="utf-8")
-        archivo_guardado.close()
+        with open("partida_guardada.txt", "w", encoding="utf-8") as archivo_guardado:
+            archivo_guardado.close()
 
-        archivo_guardado = open("partida_guardada.txt", "a", encoding="utf-8")
+            archivo_guardado = open("partida_guardada.txt", "a", encoding="utf-8")
 
-        casillas_tablero: list[str] = []
+            casillas_tablero: list[str] = []
 
-        for i in range(len(self.__tablero.casillas)):
-            fila = ""
-            for j in range(len(self.__tablero.casillas[i])):
-                fila += str(self.__tablero.casillas[i][j]) + " "
-            fila += "\n"
-            casillas_tablero.append(fila)
+            for i in range(len(self.__tablero.casillas)):
+                fila = "· "
+                for j in range(len(self.__tablero.casillas[i])):
+                    fila += str(self.__tablero.casillas[i][j]) + " "
+                fila += "\n"
+                casillas_tablero.append(fila)
 
-        archivo_guardado.writelines(casillas_tablero)
-        archivo_guardado.write(f"\n{self.__turno}")
-        archivo_guardado.close()
+            archivo_guardado.writelines(casillas_tablero)
+            archivo_guardado.write(f"\nT {self.__turno}")
+
+    # Método que gestiona la carga de una partida guardada
+    # Lee linea a linea el archivo guardado para recojer el estado de las casillas y el turno
+    def cargar_partida(self) -> bool:
+        try:
+            with open("partida_guardada.txt", "r", encoding="utf-8") as archivo_guardado:
+                num_filas: int = 0
+                casillas_guardadas: list[list[int]] = []
+                for linea in archivo_guardado:
+                    if "·" in linea:
+                        num_filas += 1
+                        casillas_guardadas.append([int(i) for i in linea.lstrip("·").split()])
+                    elif "T" in linea:
+                        self.__turno = int(linea[-1])
+                if num_filas != 8:
+                    raise Exception("El número de filas guardadas no son las que deberían.")
+                
+                self.__tablero = Tablero(casillas_guardadas)
+
+                for i, linea in enumerate(casillas_guardadas):
+                    for j, casilla in enumerate(linea):
+                        if casilla == 10:
+                            pieza: Pieza = Pieza(Vector(i, j), casilla // 10, self.__tablero)
+                            self.__piezas.append(pieza)
+                        elif casilla == 11:
+                            pieza: Pieza = Pieza(Vector(i, j), casilla // 10, self.__tablero, True)
+                            self.__piezas.append(pieza)
+                        elif casilla == 20:
+                            pieza: Pieza = Pieza(Vector(i, j), casilla // 10, self.__tablero)
+                            self.__piezas.append(pieza)
+                        elif casilla == 21:
+                            pieza: Pieza = Pieza(Vector(i, j), casilla // 10, self.__tablero, True)
+                            self.__piezas.append(pieza)
+            return True
+
+        except FileNotFoundError:
+            print("No hay ninguna partida guardada.")
+            return False
+        except Exception:
+            print("El archivo está corrupto.")
+            return False
 
 if __name__ == "__main__":
     juego = Juego()

@@ -33,6 +33,21 @@ class Vista:
     def bienvenida(self) -> None:
         print("Bienvenid@ al juego de las damas\n")
 
+    def menu_inicio(self) -> int:
+        opciones_posibles: list[int] = [1, 2, 3]
+
+        print("Elije una opción escribiendo su número:")
+        print("1. Jugar")
+        print("2. Cargar partida")
+        print("3. Salir")
+
+        opcion_elegida: int = int(input())
+
+        if opcion_elegida not in opciones_posibles:
+            raise Exception
+        else:
+            return opcion_elegida
+
     # Método para mostrar el tablero en pantalla
     def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
         print()

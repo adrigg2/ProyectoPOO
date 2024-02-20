@@ -9,7 +9,6 @@ class Pieza:
     __jugador: int
     __id: int
     __tablero: Tablero
-    __diccionario_columna: dict[int, str]
     __lista_capturas: list[list[Vector]]
     __fila_promociones: list[Vector]
 
@@ -21,23 +20,17 @@ class Pieza:
     def jugador(self):
         return self.__jugador
 
-    def __init__(self, posicion: Vector, jugador: int, tablero: Tablero) -> None:
+    def __init__(self, posicion: Vector, jugador: int, tablero: Tablero, dama: bool = False) -> None:
         self.__posicion = posicion
-        self.__dama = False
+        self.__dama = dama
         self.__jugador = jugador
         self.__tablero = tablero
-        self.__diccionario_columna = {
-            0 : 'a',
-            1 : 'b',
-            2 : 'c',
-            3 : 'd',
-            4 : 'e',
-            5 : 'f',
-            6 : 'g',
-            7 : 'h'
-        }
         self.__lista_capturas = []
-        self.__id = self.__jugador * 10
+
+        if not self.__dama:
+            self.__id = self.__jugador * 10
+        else:
+            self.__id = self.__jugador * 10 + 1
 
         if self.__jugador == 1:
             self.__direccion = Vector(1, 1)
