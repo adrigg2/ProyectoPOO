@@ -62,11 +62,14 @@ class Vista:
         )
 
         # Analiza las casillas de la lista de int que recibe como parámetro y la convierte en caracteres
-        for fila in range(len(casillas_tablero) - 1, -1, -1):
-            fila_string = f"{fila + 1}\t"
-            for casilla in casillas_tablero[fila]:
+        for i, fila in enumerate(casillas_tablero):
+            fila_string = f"{i + 1}\t"
+            for j, casilla in enumerate(fila):
                 if casilla == 0:
-                    fila_string += "·  "
+                    if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
+                        fila_string += "#  "
+                    else:
+                        fila_string += "·  "
                 else:
                     fila_string += f"{self.__piezas[casilla]}  "
             filas.append(fila_string)
