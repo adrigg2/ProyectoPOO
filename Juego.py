@@ -228,6 +228,7 @@ class Juego:
     def cargar_partida(self) -> bool:
         carga_finalizada: bool = False
         carga_exitosa: bool = False
+        self.__turno = 0
         while not carga_finalizada:
             try:
                 with open("partida_guardada.txt", "r", encoding="utf-8") as archivo_guardado:
@@ -241,6 +242,8 @@ class Juego:
                             self.__turno = int(linea[-1])
                     if num_filas != 8:
                         raise ArchivoCorruptoError("El número de filas guardadas no son las que deberían.")
+                    if self.__turno == 0:
+                        raise ArchivoCorruptoError("No hay turno guardado.")
                     
                     self.__tablero = Tablero(casillas_guardadas)
 
@@ -295,6 +298,8 @@ class Juego:
                 if num_filas != 8:
                     for i in range(8 - num_filas):
                         casillas.append([0, 0, 0, 0, 0, 0, 0, 0])
+                if turno == 0:
+                    turno = 1
 
                 for i, linea in enumerate(casillas):
                     for j, casilla in enumerate(linea):
