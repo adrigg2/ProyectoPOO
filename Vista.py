@@ -1,4 +1,5 @@
 from Vector import Vector
+from Excepciones import OpcionNoValidaError
 
 class Vista:
     __piezas: dict[int, str]
@@ -44,7 +45,7 @@ class Vista:
         opcion_elegida: int = int(input())
 
         if opcion_elegida not in opciones_posibles:
-            raise Exception
+            raise OpcionNoValidaError("La opción elegida no es correcta")
         else:
             return opcion_elegida
 
@@ -73,6 +74,7 @@ class Vista:
                 else:
                     fila_string += f"{self.__piezas[casilla]}  "
             filas.append(fila_string)
+        filas = filas[::-1]
         filas.append("\ta  b  c  d  e  f  g  h\n")
 
         # Coloca el texto de ayuda centrado en el tablero

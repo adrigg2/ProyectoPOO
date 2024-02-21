@@ -1,7 +1,3 @@
-13. Uso de ficheros (guardar partida)
-
-14. Usar excepciones
-
 16. Limpiar código y comentar
 
 
@@ -46,3 +42,7 @@ múltiple).
 
 --8. Un movimiento de captura no finaliza hasta que se terminan todos los saltos posibles. Solo 
 entonces pueden retirarse del tablero las piezas capturadas.
+
+--13. Uso de ficheros (guardar partida)
+
+--14. Usar excepciones

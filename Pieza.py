@@ -19,6 +19,10 @@ class Pieza:
     @property
     def jugador(self):
         return self.__jugador
+    
+    @property
+    def fila_promociones(self):
+        return self.__fila_promociones
 
     def __init__(self, posicion: Vector, jugador: int, tablero: Tablero, dama: bool = False) -> None:
         self.__posicion = posicion
@@ -162,7 +166,7 @@ class Pieza:
             while i < len(movimientos_validos):
                 pos_movimiento: Vector = self.__tablero.convertir_a_posicion(movimientos_validos[i])
                 for captura in self.__lista_capturas:
-                    producto_escalar: float = (pos_movimiento - self.__posicion).normalizar().producto_escalar(captura[0].normalizar()) #type:ignore
+                    producto_escalar: float = (pos_movimiento - self.__posicion).normalizar().producto_escalar(captura[0].normalizar() * self.__direccion) #type:ignore
                     misma_direccion: bool = producto_escalar > 0.999 and producto_escalar < 1.001
                     if misma_direccion:
                         distancia_movimiento = pos_movimiento - self.__posicion

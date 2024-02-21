@@ -2,6 +2,7 @@ from Pieza import Pieza
 from Tablero import Tablero
 from Vector import Vector
 from Vista import Vista
+from Excepciones import ArchivoCorruptoError, OpcionNoValidaError
 
 class Juego:
     __tablero: Tablero
@@ -46,7 +47,7 @@ class Juego:
                         menu_inicio = False
                 elif opcion_elegida == 3:
                     menu_inicio = False
-            except:
+            except OpcionNoValidaError:
                 print("La opción elegida no es correcta.")
 
         while jugar:
@@ -234,20 +235,31 @@ class Juego:
                     elif "T" in linea:
                         self.__turno = int(linea[-1])
                 if num_filas != 8:
-                    raise Exception("El número de filas guardadas no son las que deberían.")
+                    raise ArchivoCorruptoError("El número de filas guardadas no son las que deberían.")
                 
                 self.__tablero = Tablero(casillas_guardadas)
 
                 for i, linea in enumerate(casillas_guardadas):
                     for j, casilla in enumerate(linea):
+                        piezas: list[int] = [10, 11, 20, 21]
+
+                        if ((i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0)) and casilla in piezas:
+                            raise ArchivoCorruptoError("Hay piezas en posiciones no válidas.")
+
                         if casilla == 10:
                             pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero)
+                            if pieza.posicion in pieza.fila_promociones:
+                                pieza.promocionar()
+
                             self.__piezas.append(pieza)
                         elif casilla == 11:
                             pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, True)
                             self.__piezas.append(pieza)
                         elif casilla == 20:
                             pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero)
+                            if pieza.posicion in pieza.fila_promociones:
+                                pieza.promocionar()
+
                             self.__piezas.append(pieza)
                         elif casilla == 21:
                             pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, True)
@@ -257,7 +269,7 @@ class Juego:
         except FileNotFoundError:
             print("\nNo hay ninguna partida guardada.\n")
             return False
-        except Exception:
+        except ArchivoCorruptoError:
             print("\nEl archivo está corrupto.\n")
             return False
 
