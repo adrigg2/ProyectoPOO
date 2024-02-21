@@ -204,11 +204,13 @@ class Juego:
     # Método que gestiona el guardado de la partida
     # Guarda las casillas del tablero en su forma de int y el turno al final marcado con una T
     def guardar_partida(self) -> None:
-        with open("partida_guardada.txt", "w", encoding="utf-8") as archivo_guardado:
-            archivo_guardado.close()
+        # Se abre el archivo en modo escritura para crearlo si no existe y borrar sus contenidos
+        # si existe
+        archivo_guardado = open("partida_guardada.txt", "w", encoding="utf-8")
+        archivo_guardado.close()
 
-            archivo_guardado = open("partida_guardada.txt", "a", encoding="utf-8")
-
+        # Se abre el archivo en modo 'append' para añadir los datos linea a linea sin sobreescirbir nada
+        with open("partida_guardada.txt", "a", encoding="utf-8") as archivo_guardado:
             casillas_tablero: list[str] = []
 
             for i in range(len(self.__tablero.casillas)):
@@ -224,54 +226,113 @@ class Juego:
     # Método que gestiona la carga de una partida guardada
     # Lee linea a linea el archivo guardado para recojer el estado de las casillas y el turno
     def cargar_partida(self) -> bool:
+        carga_finalizada: bool = False
+        carga_exitosa: bool = False
+        while not carga_finalizada:
+            try:
+                with open("partida_guardada.txt", "r", encoding="utf-8") as archivo_guardado:
+                    num_filas: int = 0
+                    casillas_guardadas: list[list[int]] = []
+                    for linea in archivo_guardado:
+                        if "·" in linea:
+                            num_filas += 1
+                            casillas_guardadas.append([int(i) for i in linea.lstrip("·").split()])
+                        elif "T" in linea:
+                            self.__turno = int(linea[-1])
+                    if num_filas != 8:
+                        raise ArchivoCorruptoError("El número de filas guardadas no son las que deberían.")
+                    
+                    self.__tablero = Tablero(casillas_guardadas)
+
+                    for i, linea in enumerate(casillas_guardadas):
+                        for j, casilla in enumerate(linea):
+                            piezas: list[int] = [10, 11, 20, 21]
+
+                            # Se comprueba si hay posiciones no válidas marcadas como ocupadas
+                            if ((i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0)) and casilla in piezas:
+                                raise ArchivoCorruptoError("Hay piezas en posiciones no válidas.")
+
+                            if casilla == 10 or casilla == 20:
+                                pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero)
+                                if pieza.posicion in pieza.fila_promociones:
+                                    raise ArchivoCorruptoError("Hay piezas en posiciones no válidas")
+
+                                self.__piezas.append(pieza)
+                            elif casilla == 11 or casilla == 21:
+                                pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, True)
+                                self.__piezas.append(pieza)
+                carga_finalizada = True
+                carga_exitosa = True
+
+            except FileNotFoundError:
+                print("\nNo hay ninguna partida guardada.\n")
+                carga_finalizada = True
+            except ArchivoCorruptoError as e:
+                print(f"\nEl archivo está corrupto.\n{e}\n¿Quieres intentar arreglarlo? (s/n)")
+                opcion_elegida: str = ""
+                while opcion_elegida.lower() != "s" and opcion_elegida.lower() != "n":
+                    opcion_elegida = input()
+                    if opcion_elegida.lower() != "s" and opcion_elegida.lower() != "n":
+                        print("Opción no válida")
+                if opcion_elegida == "s":
+                    carga_finalizada = not self.arreglar_archivo_guardado()
+                else:
+                    carga_finalizada = True
+        return carga_exitosa
+    
+    def arreglar_archivo_guardado(self) -> bool:
         try:
+            turno: int = 0
+            casillas: list[list[int]] = []
             with open("partida_guardada.txt", "r", encoding="utf-8") as archivo_guardado:
                 num_filas: int = 0
-                casillas_guardadas: list[list[int]] = []
                 for linea in archivo_guardado:
                     if "·" in linea:
                         num_filas += 1
-                        casillas_guardadas.append([int(i) for i in linea.lstrip("·").split()])
+                        casillas.append([int(i) for i in linea.lstrip("·").split()])
                     elif "T" in linea:
-                        self.__turno = int(linea[-1])
+                        turno = int(linea[-1])
                 if num_filas != 8:
-                    raise ArchivoCorruptoError("El número de filas guardadas no son las que deberían.")
-                
-                self.__tablero = Tablero(casillas_guardadas)
+                    for i in range(8 - num_filas):
+                        casillas.append([0, 0, 0, 0, 0, 0, 0, 0])
 
-                for i, linea in enumerate(casillas_guardadas):
+                for i, linea in enumerate(casillas):
                     for j, casilla in enumerate(linea):
                         piezas: list[int] = [10, 11, 20, 21]
 
                         if ((i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0)) and casilla in piezas:
-                            raise ArchivoCorruptoError("Hay piezas en posiciones no válidas.")
+                            casillas[i][j] = 0
 
-                        if casilla == 10:
+                        if casilla == 10 or casilla == 20:
                             pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero)
                             if pieza.posicion in pieza.fila_promociones:
-                                pieza.promocionar()
+                                casillas[i][j] += 1
 
-                            self.__piezas.append(pieza)
-                        elif casilla == 11:
-                            pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, True)
-                            self.__piezas.append(pieza)
-                        elif casilla == 20:
-                            pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero)
-                            if pieza.posicion in pieza.fila_promociones:
-                                pieza.promocionar()
+            # Se abre el archivo en modo escritura para crearlo si no existe y borrar sus contenidos
+            # si existe
+            archivo_guardado = open("partida_guardada.txt", "w", encoding="utf-8")
+            archivo_guardado.close()
 
-                            self.__piezas.append(pieza)
-                        elif casilla == 21:
-                            pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, True)
-                            self.__piezas.append(pieza)
+            # Se abre el archivo en modo 'append' para añadir los datos linea a linea sin sobreescirbir nada
+            with open("partida_guardada.txt", "a", encoding="utf-8") as archivo_guardado:
+                casillas_tablero: list[str] = []
+
+                for i in range(len(casillas)):
+                    fila = "· "
+                    for j in range(len(casillas[i])):
+                        fila += str(casillas[i][j]) + " "
+                    fila += "\n"
+                    casillas_tablero.append(fila)
+
+                archivo_guardado.writelines(casillas_tablero)
+                archivo_guardado.write(f"\nT {turno}")
+            
             return True
-
+        
         except FileNotFoundError:
-            print("\nNo hay ninguna partida guardada.\n")
+            print("El archivo no existe")
             return False
-        except ArchivoCorruptoError:
-            print("\nEl archivo está corrupto.\n")
-            return False
+            
 
 if __name__ == "__main__":
     juego = Juego()

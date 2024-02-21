@@ -3,6 +3,3 @@ class ArchivoCorruptoError(ValueError):
 
 class OpcionNoValidaError(ValueError):
     pass
-
-if __name__ == "__main__":
-    raise BaseException()
