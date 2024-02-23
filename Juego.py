@@ -232,18 +232,20 @@ class Juego:
         while not carga_finalizada:
             try:
                 with open("partida_guardada.txt", "r", encoding="utf-8") as archivo_guardado:
-                    num_filas: int = 0
                     casillas_guardadas: list[list[int]] = []
+                    casillas_validas: list[int] = [0, 10, 11, 20, 21]
                     for linea in archivo_guardado:
                         if "·" in linea:
-                            num_filas += 1
-                            casillas_guardadas.append([int(i) for i in linea.lstrip("·").split()])
+                            casillas_guardadas.append([int(i) for i in linea.lstrip("·").split() if int(i) in casillas_validas])
                         elif "T" in linea:
                             self.__turno = int(linea[-1])
-                    if num_filas != 8:
+                    if len(casillas_guardadas) != 8:
                         raise ArchivoCorruptoError("El número de filas guardadas no son las que deberían.")
                     if self.__turno == 0:
                         raise ArchivoCorruptoError("No hay turno guardado.")
+                    for fila in casillas_guardadas:
+                        if len(fila) != 8:
+                            raise ArchivoCorruptoError("El número de casillas de una fila no es el que debería.")
                     
                     self.__tablero = Tablero(casillas_guardadas)
 
@@ -287,19 +289,28 @@ class Juego:
         try:
             turno: int = 0
             casillas: list[list[int]] = []
+            casillas_validas: list[int] = [0, 10, 11, 20, 21]
             with open("partida_guardada.txt", "r", encoding="utf-8") as archivo_guardado:
-                num_filas: int = 0
                 for linea in archivo_guardado:
                     if "·" in linea:
-                        num_filas += 1
-                        casillas.append([int(i) for i in linea.lstrip("·").split()])
+                        casillas.append([int(i) for i in linea.lstrip("·").split() if int(i) in casillas_validas])
                     elif "T" in linea:
                         turno = int(linea[-1])
-                if num_filas != 8:
-                    for i in range(8 - num_filas):
+                if len(casillas) < 8:
+                    for i in range(8 - len(casillas)):
                         casillas.append([0, 0, 0, 0, 0, 0, 0, 0])
+                if len(casillas) > 8:
+                    for i in range(len(casillas) - 8):
+                        casillas.pop()
                 if turno == 0:
                     turno = 1
+                for fila in casillas:
+                    if len(fila) < 8:
+                        for i in range(8 - len(fila)):
+                            fila.append(0)
+                    if len(fila) > 8:
+                        for i in range(len(fila) - 8):
+                            fila.pop()
 
                 for i, linea in enumerate(casillas):
                     for j, casilla in enumerate(linea):
