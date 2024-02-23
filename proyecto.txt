@@ -1,5 +1,5 @@
 16. Limpiar código y comentar
-    - Indicar turno
+--    - Indicar turno
     - Marcar pieza movible / posiciones posibles
 
 

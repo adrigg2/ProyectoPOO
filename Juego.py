@@ -83,19 +83,16 @@ class Juego:
                     else:
                         i += 1
             
-            piezas_movibles: list[Vector] = []
-
             # Guardar las piezas movibles en una lista
-            for pieza in situacion_piezas:
-                piezas_movibles.append(pieza[0])
-
+            piezas_movibles: list[Vector] = [i[0] for i in situacion_piezas]
+            
             # Si el jugador puede mover piezas, continúa el juego
             if piezas_movibles:
                 movimiento_elegido: bool = False
 
                 # Repite el bucle mientras no se elija un movimiento
                 while not movimiento_elegido:
-                    pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles)
+                    pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles, self.__turno)
 
                     # Comprueba si el jugador ha decidido abandonar o reiniciar
                     if pieza_a_mover == "abandonar":

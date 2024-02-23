@@ -84,8 +84,13 @@ class Vista:
         resultado = "\n".join(filas)
         print(resultado)
 
-    def mostrar_piezas_movibles(self, posiciones: list[Vector]) -> str:
+    def mostrar_piezas_movibles(self, posiciones: list[Vector], turno: int) -> str:
         piezas_movibles: str = ""
+        if turno == 1:
+            piezas_movibles += "Mueven blancas:\n"
+        else:
+            piezas_movibles += "Mueven negras:\n"
+        
         for posicion in posiciones:
             id_casilla: str = self.__diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
             piezas_movibles += id_casilla + "  "
