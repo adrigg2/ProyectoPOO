@@ -203,17 +203,17 @@ class Juego:
     def guardar_partida(self) -> None:
         # Se abre el archivo en modo escritura para crearlo si no existe y borrar sus contenidos
         # si existe
-        archivo_guardado = open("partida_guardada.txt", "w", encoding="utf-8")
+        archivo_guardado = open("partida_guardada.save", "w", encoding="utf-8")
         archivo_guardado.close()
 
         # Se abre el archivo en modo 'append' para añadir los datos linea a linea sin sobreescirbir nada
-        with open("partida_guardada.txt", "a", encoding="utf-8") as archivo_guardado:
+        with open("partida_guardada.save", "a", encoding="utf-8") as archivo_guardado:
             casillas_tablero: list[str] = []
 
             for i in range(len(self.__tablero.casillas)):
                 fila = "· "
                 for j in range(len(self.__tablero.casillas[i])):
-                    fila += str(self.__tablero.casillas[i][j]) + " "
+                    fila += f"{self.__tablero.casillas[i][j]:4}"
                 fila += "\n"
                 casillas_tablero.append(fila)
 
@@ -225,21 +225,21 @@ class Juego:
     def cargar_partida(self) -> bool:
         carga_finalizada: bool = False
         carga_exitosa: bool = False
-        self.__turno = 0
         while not carga_finalizada:
             try:
-                with open("partida_guardada.txt", "r", encoding="utf-8") as archivo_guardado:
+                with open("partida_guardada.save", "r", encoding="utf-8") as archivo_guardado:
+                    self.__turno = 0
                     casillas_guardadas: list[list[int]] = []
                     casillas_validas: list[int] = [0, 10, 11, 20, 21]
                     for linea in archivo_guardado:
                         if "·" in linea:
-                            casillas_guardadas.append([int(i) for i in linea.lstrip("·").split() if int(i) in casillas_validas])
+                            casillas_guardadas.append([int(i) for i in linea.lstrip("·").split() if i.isnumeric() and int(i) in casillas_validas])
                         elif "T" in linea:
-                            self.__turno = int(linea[-1])
+                            self.__turno = int(linea.rstrip("\n")[-1])
                     if len(casillas_guardadas) != 8:
                         raise ArchivoCorruptoError("El número de filas guardadas no son las que deberían.")
-                    if self.__turno == 0:
-                        raise ArchivoCorruptoError("No hay turno guardado.")
+                    if self.__turno <= 0 or self.__turno > 2:
+                        raise ArchivoCorruptoError("No hay turno guardado o el turno guardado es incorrecto.")
                     for fila in casillas_guardadas:
                         if len(fila) != 8:
                             raise ArchivoCorruptoError("El número de casillas de una fila no es el que debería.")
@@ -287,19 +287,19 @@ class Juego:
             turno: int = 0
             casillas: list[list[int]] = []
             casillas_validas: list[int] = [0, 10, 11, 20, 21]
-            with open("partida_guardada.txt", "r", encoding="utf-8") as archivo_guardado:
+            with open("partida_guardada.save", "r", encoding="utf-8") as archivo_guardado:
                 for linea in archivo_guardado:
                     if "·" in linea:
-                        casillas.append([int(i) for i in linea.lstrip("·").split() if int(i) in casillas_validas])
+                        casillas.append([int(i) for i in linea.lstrip("·").split() if i.isnumeric() and int(i) in casillas_validas])
                     elif "T" in linea:
-                        turno = int(linea[-1])
+                        turno = int(linea.rstrip("\n")[-1])
                 if len(casillas) < 8:
                     for i in range(8 - len(casillas)):
                         casillas.append([0, 0, 0, 0, 0, 0, 0, 0])
                 if len(casillas) > 8:
                     for i in range(len(casillas) - 8):
                         casillas.pop()
-                if turno == 0:
+                if turno <= 0 or turno > 2:
                     turno = 1
                 for fila in casillas:
                     if len(fila) < 8:
@@ -323,17 +323,17 @@ class Juego:
 
             # Se abre el archivo en modo escritura para crearlo si no existe y borrar sus contenidos
             # si existe
-            archivo_guardado = open("partida_guardada.txt", "w", encoding="utf-8")
+            archivo_guardado = open("partida_guardada.save", "w", encoding="utf-8")
             archivo_guardado.close()
 
             # Se abre el archivo en modo 'append' para añadir los datos linea a linea sin sobreescirbir nada
-            with open("partida_guardada.txt", "a", encoding="utf-8") as archivo_guardado:
+            with open("partida_guardada.save", "a", encoding="utf-8") as archivo_guardado:
                 casillas_tablero: list[str] = []
 
                 for i in range(len(casillas)):
                     fila = "· "
                     for j in range(len(casillas[i])):
-                        fila += str(casillas[i][j]) + " "
+                        fila += f"{casillas[i][j]:4}"
                     fila += "\n"
                     casillas_tablero.append(fila)
 

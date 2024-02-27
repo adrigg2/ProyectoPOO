@@ -1,5 +1,6 @@
 from Vector import Vector
 from Excepciones import OpcionNoValidaError
+from colorama import Fore, Back, Style
 
 class Vista:
     __piezas: dict[int, str]
@@ -8,10 +9,10 @@ class Vista:
 
     def __init__(self) -> None:
         self.__piezas = {
-            10 : "\033[91mo\033[00m",
-            20 : "\033[92mo\033[00m",
-            11 : "\033[91mO\033[00m",
-            21 : "\033[92mO\033[00m"
+            10 : f"{Style.BRIGHT}{Fore.RED}o{Style.RESET_ALL}",
+            20 : f"{Style.BRIGHT}{Fore.BLUE}o{Style.RESET_ALL}",
+            11 : f"{Style.BRIGHT}{Fore.RED}O{Style.RESET_ALL}",
+            21 : f"{Style.BRIGHT}{Fore.BLUE}O{Style.RESET_ALL}"
         }
 
         self.__diccionario_columna = {
@@ -50,15 +51,15 @@ class Vista:
             return opcion_elegida
 
     # Método para mostrar el tablero en pantalla
-    def mostrar_tablero(self, casillas_tablero: list[list[int]]) -> None:
+    def mostrar_tablero(self, casillas_tablero: list[list[int]], posiciones_a_marcar: list[Vector] = []) -> None:
         print()
         filas: list[str] = []
         texto_ayuda: tuple[str, str, str, str, str, str] = (
-            "\t ESCRIBE \"ABANDONAR\"",
+            f"\t ESCRIBE {Fore.YELLOW}\"ABANDONAR\"{Style.RESET_ALL}",
             "\t PARA ABANDONAR LA PARTIDA",
-            "\t ESCRIBE \"REINICIAR\"",
+            f"\t ESCRIBE {Fore.YELLOW}\"REINICIAR\"{Style.RESET_ALL}",
             "\t PARA REINICIAR LA PARTIDA",
-            "\t ESCRIBE \"GUARDAR\"",
+            f"\t ESCRIBE {Fore.YELLOW}\"GUARDAR\"{Style.RESET_ALL}",
             "\t PARA GUARDAR Y SALIR"
         )
 
@@ -66,13 +67,22 @@ class Vista:
         for i, fila in enumerate(casillas_tablero):
             fila_string = f"{i + 1}\t"
             for j, casilla in enumerate(fila):
-                if casilla == 0:
-                    if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
-                        fila_string += "#  "
+                if Vector(j, i) in posiciones_a_marcar:
+                    if casilla == 0:
+                        if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
+                            fila_string += "#  "
+                        else:
+                            fila_string += "·  "
                     else:
-                        fila_string += "·  "
+                        fila_string += f"{self.__piezas[casilla]}  "
                 else:
-                    fila_string += f"{self.__piezas[casilla]}  "
+                    if casilla == 0:
+                        if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
+                            fila_string += "#  "
+                        else:
+                            fila_string += "·  "
+                    else:
+                        fila_string += f"{self.__piezas[casilla]}  "
             filas.append(fila_string)
         filas = filas[::-1]
         filas.append("\ta  b  c  d  e  f  g  h\n")
@@ -87,9 +97,9 @@ class Vista:
     def mostrar_piezas_movibles(self, posiciones: list[Vector], turno: int) -> str:
         piezas_movibles: str = ""
         if turno == 1:
-            piezas_movibles += "Mueven blancas:\n"
+            piezas_movibles += f"Mueven {Style.BRIGHT}{Fore.RED}blancas{Style.RESET_ALL}:\n"
         else:
-            piezas_movibles += "Mueven negras:\n"
+            piezas_movibles += f"Mueven {Style.BRIGHT}{Fore.BLUE}negras{Style.RESET_ALL}:\n"
         
         for posicion in posiciones:
             id_casilla: str = self.__diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)

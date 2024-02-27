@@ -101,22 +101,23 @@ class Pieza:
     def calcular_movimientos(self) -> list[str]:
         # Función para comprobar si una posición está libre, ocupada por una pieza aliada o ocupada por una enemiga
         # Devuelve una cadena vacía si la posición está ocupada por una pieza enemiga que no se puede capturar
-        # Devuelve una posición como cadena si la posición está disponible
-        def comprobar_posicion(posicion: Vector, incremento_x: int, incremento_y: int = 1) -> str:
+        # Devuelve una posición como cadena si la posición está disponible y un bool que indica si hay una captura
+        def comprobar_posicion(posicion: Vector, incremento_x: int, incremento_y: int = 1, hay_captura: bool = False) -> tuple[str, bool]:
             no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
             if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
-                return self.__tablero.codificar_posicion(posicion)
+                return self.__tablero.codificar_posicion(posicion), hay_captura
             
             # Si la casilla está ocupada por una pieza enemiga, comprueba si la siguiente está vacía y, por tanto
             # si se puede capturar.
-            elif no_fuera_limites and self.__tablero.comprobar_posicion(posicion) // 10 != self.__jugador:
+            elif no_fuera_limites and self.__tablero.comprobar_posicion(posicion) // 10 != self.__jugador and not hay_captura:
                 pos_captura: Vector = posicion.__copy__() #type:ignore
                 posicion += Vector(incremento_x, incremento_y).normalizar() * sqrt(2) * self.__direccion #type: ignore
                 no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
                 if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
                     self.__lista_capturas.append([Vector(incremento_x, incremento_y).normalizar() * sqrt(2), pos_captura.__copy__()]) #type:ignore
-                    return self.__tablero.codificar_posicion(posicion)
-            return ""
+                    hay_captura = True
+                    return self.__tablero.codificar_posicion(posicion), hay_captura
+            return "", hay_captura
         
         movimientos_validos: list[str] = []
         self.__lista_capturas = []
@@ -125,25 +126,28 @@ class Pieza:
         if not self.__dama:
             for i in range (-1, 2, 2):
                 pos_objetivo: Vector = self.__posicion + Vector(i, 1) * self.__direccion #type:ignore
-                posible_movimiento = comprobar_posicion(pos_objetivo, i)
+                posible_movimiento = comprobar_posicion(pos_objetivo, i)[0]
                 if posible_movimiento != "":
                     movimientos_validos.append(posible_movimiento)
 
         #Si es dama, comprueba todas las casillas en diagonal
         else:
+            hay_captura: bool = False
             for i in range(-1, 2, 2):
+                hay_captura = False
                 for j in range(-1, -9, -1):
                     pos_objetivo: Vector = self.__posicion + Vector(j, j * i) * self.__direccion #type:ignore
-                    posible_movimiento = comprobar_posicion(pos_objetivo, j, j * i)
+                    posible_movimiento, hay_captura = comprobar_posicion(pos_objetivo, j, j * i, hay_captura)
                     if posible_movimiento != "" and posible_movimiento not in movimientos_validos:
                         movimientos_validos.append(posible_movimiento)
                     elif posible_movimiento == "":
                         break
 
             for i in range(-1, 2, 2):
+                hay_captura = False
                 for j in range(1, 9):
                     pos_objetivo: Vector = self.__posicion + Vector(j, j * i) * self.__direccion #type:ignore
-                    posible_movimiento = comprobar_posicion(pos_objetivo, j, j * i)
+                    posible_movimiento, hay_captura = comprobar_posicion(pos_objetivo, j, j * i, hay_captura)
                     if posible_movimiento != "" and posible_movimiento not in movimientos_validos:
                         movimientos_validos.append(posible_movimiento)
                     elif posible_movimiento == "":

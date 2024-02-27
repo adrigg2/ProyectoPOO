@@ -83,3 +83,10 @@ if __name__ == "__main__":
     p3 = Vector(7, 7)
 
     print(p1.normalizar() * sqrt(2)) #type: ignore
+
+    lista = [
+        Vector(1, 1),
+        Vector(2, 2)
+    ]
+
+    print(Vector(1, 1) in lista)
