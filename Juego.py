@@ -159,6 +159,8 @@ class Juego:
         # Una vez el juego ha terminado, se muestra la pantalla de fin de juego (solo si no se ha reiniciado)
         if not partida_guardada:
             self.__vista.fin_de_juego(self.__turno)
+            if self.__vista.reiniciar().lower() == "s":
+                return True
         return False
     
     def cambiar_turno(self) -> None:
@@ -236,7 +238,10 @@ class Juego:
                         if "·" in linea:
                             casillas_guardadas.append([int(i) for i in linea.lstrip("·").split() if i.isnumeric() and int(i) in casillas_validas])
                         elif "T" in linea:
-                            self.__turno = int(linea.rstrip("\n")[-1])
+                            try:
+                                self.__turno = int(linea.rstrip("\n")[-1])
+                            except ValueError:
+                                raise ArchivoCorruptoError("Hay un caracter inválido guardado como turno.")
                     if len(casillas_guardadas) != 8:
                         raise ArchivoCorruptoError("El número de filas guardadas no son las que deberían.")
                     if self.__turno <= 0 or self.__turno > 2:
@@ -293,7 +298,10 @@ class Juego:
                     if "·" in linea:
                         casillas.append([int(i) for i in linea.lstrip("·").split() if i.isnumeric() and int(i) in casillas_validas])
                     elif "T" in linea:
-                        turno = int(linea.rstrip("\n")[-1])
+                        try:
+                            turno = int(linea.rstrip("\n")[-1])
+                        except ValueError:
+                            turno = 1
                 if len(casillas) < 8:
                     for i in range(8 - len(casillas)):
                         casillas.append([0, 0, 0, 0, 0, 0, 0, 0])

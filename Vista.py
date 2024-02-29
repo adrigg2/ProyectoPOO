@@ -152,6 +152,9 @@ class Vista:
             print(f"Ganan las {Style.BRIGHT}{Fore.RED}blancas{Style.RESET_ALL}")
             print("------------------")
 
+    def reiniciar(self):
+        return input("¿Quieres volver a jugar? (escribe \"s\" si sí, cualquier cosa si no): ")
+
 
 if __name__ == "__main__":
     pass
