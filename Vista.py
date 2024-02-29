@@ -6,9 +6,12 @@ class Vista:
     __piezas: dict[int, str]
     __diccionario_columna: dict[int, str]
     __palabras_clave: tuple[str, str, str]
+    __color_jugador: dict[int, str]
 
     def __init__(self) -> None:
         self.__piezas = {
+            0 : "o",
+            1 : "O",
             10 : f"{Style.BRIGHT}{Fore.RED}o{Style.RESET_ALL}",
             20 : f"{Style.BRIGHT}{Fore.BLUE}o{Style.RESET_ALL}",
             11 : f"{Style.BRIGHT}{Fore.RED}O{Style.RESET_ALL}",
@@ -32,6 +35,11 @@ class Vista:
             "guardar"
         )
 
+        self.__color_jugador = {
+            1 : Style.BRIGHT + Back.RED,
+            2 : Style.BRIGHT + Back.BLUE
+        }
+
     def bienvenida(self) -> None:
         print("Bienvenid@ al juego de las damas\n")
 
@@ -51,7 +59,7 @@ class Vista:
             return opcion_elegida
 
     # Método para mostrar el tablero en pantalla
-    def mostrar_tablero(self, casillas_tablero: list[list[int]], posiciones_a_marcar: list[Vector] = []) -> None:
+    def mostrar_tablero(self, casillas_tablero: list[list[int]], turno: int, posiciones_a_marcar: list[Vector] = []) -> None:
         print()
         filas: list[str] = []
         texto_ayuda: tuple[str, str, str, str, str, str] = (
@@ -70,11 +78,11 @@ class Vista:
                 if Vector(j, i) in posiciones_a_marcar:
                     if casilla == 0:
                         if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
-                            fila_string += "#  "
+                            fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}#{Style.RESET_ALL}  "
                         else:
-                            fila_string += "·  "
+                            fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}·{Style.RESET_ALL}  "
                     else:
-                        fila_string += f"{self.__piezas[casilla]}  "
+                        fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}{self.__piezas[casilla % 10]}{Style.RESET_ALL}  "
                 else:
                     if casilla == 0:
                         if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
@@ -137,11 +145,11 @@ class Vista:
     def fin_de_juego(self, perdedor: int):
         if perdedor == 1:
             print("------------------")
-            print("Ganan las negras")
+            print(f"Ganan las {Style.BRIGHT}{Fore.BLUE}negras{Style.RESET_ALL}")
             print("------------------")
         elif perdedor == 2:
             print("------------------")
-            print("Ganan las blancas")
+            print(f"Ganan las {Style.BRIGHT}{Fore.RED}blancas{Style.RESET_ALL}")
             print("------------------")
 
 

@@ -63,7 +63,6 @@ class Juego:
         juego: bool = True
         partida_guardada: bool = False
         while juego:
-            self.__vista.mostrar_tablero(self.__tablero.casillas)
             situacion_piezas: list[tuple[Vector, bool]] = []
 
             # Comprobar la movilidad de las piezas del jugador que debe mover
@@ -85,6 +84,7 @@ class Juego:
             
             # Guardar las piezas movibles en una lista
             piezas_movibles: list[Vector] = [i[0] for i in situacion_piezas]
+            self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, piezas_movibles)
             
             # Si el jugador puede mover piezas, continúa el juego
             if piezas_movibles:
@@ -117,6 +117,7 @@ class Juego:
                             primer_movimiento: bool = True
                             while continuar_captura:
                                 posiciones_a_mover: list[str] = pieza.calcular_movimientos()
+                                self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, [self.__tablero.convertir_a_posicion(i) for i in posiciones_a_mover])
                                 movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
 
                                 # Comprueba si el jugador ha decidido abandonar o reiniciar

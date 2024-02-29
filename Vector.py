@@ -42,10 +42,7 @@ class Vector:
     
     def producto_escalar(self, __value: object) -> float:
         if isinstance(__value, Vector):
-            #return self.coord_x * __value.coord_x + self.coord_y * __value.coord_y
-            producto_x = self.coord_x * __value.coord_x
-            producto_y = self.coord_y * __value.coord_y
-            return producto_x + producto_y
+            return self.coord_x * __value.coord_x + self.coord_y * __value.coord_y
         raise ValueError("El producto escalar solo puede realizarse entre 2 vectores.")
 
     def normalizar(self) -> object:

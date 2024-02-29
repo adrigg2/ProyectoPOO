@@ -8,20 +8,8 @@ class Tablero:
     def casillas(self):
         return self.__casillas
 
-    def __init__(self, casillas: list[list[int]] = []) -> None:
-        if casillas:
-            self.__casillas = casillas
-        else:
-            self.__casillas = [
-                [0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0]
-            ]
+    def __init__(self, casillas: list[list[int]] = [[0 for x in range(8)] for y in range(8)]) -> None:
+        self.__casillas = casillas
         self.__diccionario_columna = {
             'a' : 0,
             'b' : 1,
