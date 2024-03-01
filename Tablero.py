@@ -5,7 +5,7 @@ class Tablero:
     __diccionario_columna: dict[str, int]
 
     @property
-    def casillas(self):
+    def casillas(self) -> list[list[int]]:
         return self.__casillas
 
     def __init__(self, casillas: list[list[int]] = [[0 for x in range(8)] for y in range(8)]) -> None:
@@ -33,19 +33,19 @@ class Tablero:
         return resultado
     
     # Método para comprobar la ocupación de una casilla
-    def comprobar_posicion(self, posicion: Vector):
+    def comprobar_posicion(self, posicion: Vector) -> int:
         return self.__casillas[int(posicion.coord_y)][int(posicion.coord_x)]
     
     # Método para actualizar el tablero. Recibe la posición nueva de la pieza, su posición anterior y su id
     # Vacía la posición anterior y ocupa la nueva posición con la id de la pieza
-    def actualizar_tablero(self, posicion: Vector, id: int, posicion_anterior: Vector = Vector(-1, -1)):
+    def actualizar_tablero(self, posicion: Vector, id: int, posicion_anterior: Vector = Vector(-1, -1)) -> None:
         if posicion_anterior != Vector(-1, -1):
             self.__casillas[int(posicion_anterior.coord_y)][int(posicion_anterior.coord_x)] = 0
         if posicion != Vector(-1, -1):
             self.__casillas[int(posicion.coord_y)][int(posicion.coord_x)] = id
 
     # Método para convertir una posición en notación de tablero a un vector
-    def convertir_a_posicion(self, id_posicion: str):
+    def convertir_a_posicion(self, id_posicion: str) -> Vector:
         coordenadas: list[int] = []
         for letra in id_posicion:
             if letra.isalpha():
