@@ -40,18 +40,24 @@ class Vista:
             2 : Style.BRIGHT + Back.BLUE
         }
 
+    # Método que imprime un mensaje de bienvenida
     def bienvenida(self) -> None:
         print("Bienvenid@ al juego de las damas\n")
 
+    # Método que imprime el menú de inicio y devuelve la opción elegida por el jugador
+    # o lanza una excepción si la opción no es correcta
     def menu_inicio(self) -> int:
         opciones_posibles: list[int] = [1, 2, 3]
 
-        print("Elije una opción escribiendo su número:")
+        print("\nElije una opción escribiendo su número:")
         print("1. Jugar")
         print("2. Cargar partida")
-        print("3. Salir")
+        print("3. Salir\n")
 
-        opcion_elegida: int = int(input())
+        try:
+            opcion_elegida: int = int(input())
+        except ValueError:
+            raise OpcionNoValidaError("La opción elegida debe ser un número")
 
         if opcion_elegida not in opciones_posibles:
             raise OpcionNoValidaError("La opción elegida no es correcta")
@@ -92,6 +98,7 @@ class Vista:
                     else:
                         fila_string += f"{self.__piezas[casilla]}  "
             filas.append(fila_string)
+        # Invierte el tablero para mostrarlo con las filas en orden descendiente (de la 8 a la 1)
         filas = filas[::-1]
         filas.append("\ta  b  c  d  e  f  g  h\n")
 
@@ -102,6 +109,7 @@ class Vista:
         resultado = "\n".join(filas)
         print(resultado)
 
+    # Método que muestra las piezas que pueden ser movidas y devuelve la pieza elegida por el jugador
     def mostrar_piezas_movibles(self, posiciones: list[Vector], turno: int) -> str:
         piezas_movibles: str = ""
         if turno == 1:
@@ -115,34 +123,42 @@ class Vista:
         print(piezas_movibles)
 
         pieza_a_mover: str = ""
-        while pieza_a_mover not in piezas_movibles.split() and pieza_a_mover not in self.__palabras_clave:
+        opcion_incorrecta: bool = pieza_a_mover not in piezas_movibles.split() and pieza_a_mover not in self.__palabras_clave
+        while opcion_incorrecta:
             pieza_a_mover = input("Elige pieza a mover: ").lower()
-            if pieza_a_mover not in piezas_movibles.split() and pieza_a_mover not in self.__palabras_clave:
+            opcion_incorrecta = pieza_a_mover not in piezas_movibles.split() and pieza_a_mover not in self.__palabras_clave
+            if opcion_incorrecta:
                 print("Esa no es una posición válida.")
 
         return pieza_a_mover.lower()
     
+    # Método que muestra los posibles movimientos de la pieza elegida por el jugador y devuelve la opción elegida
     def mostrar_movimientos(self, posiciones: list[str], primer_movimiento: bool) -> str:
         movimientos_posibles: str = "  ".join(posiciones)
         print(movimientos_posibles)
 
         posicion_a_mover: str = ""
         if primer_movimiento:
-            while posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
+            opcion_incorrecta: bool = posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave
+            while opcion_incorrecta:
                 posicion_a_mover = input("Elige posición para mover la pieza (o escribe \"atras\" para elegir otra pieza): ").lower()
-                if posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave:
+                opcion_incorrecta = posicion_a_mover not in posiciones and posicion_a_mover != "atras" and posicion_a_mover not in self.__palabras_clave
+                if opcion_incorrecta:
                     print("Esa no es una posición válida.")
         else:
-            while posicion_a_mover not in posiciones and posicion_a_mover not in self.__palabras_clave[:2]:
+            opcion_incorrecta: bool = posicion_a_mover not in posiciones and posicion_a_mover not in self.__palabras_clave[:2]
+            while opcion_incorrecta:
                 posicion_a_mover = input("Puedes seguir capturando. Elige posición para mover la pieza: ").lower()
+                opcion_incorrecta = posicion_a_mover not in posiciones and posicion_a_mover not in self.__palabras_clave[:2]
                 if posicion_a_mover == "guardar":
                     print(f"Solo se puede guardar al principio del turno")
-                elif posicion_a_mover not in posiciones and posicion_a_mover not in self.__palabras_clave[:2]:
+                elif opcion_incorrecta:
                     print("Esa no es una posición válida.")
 
         return posicion_a_mover
     
-    def fin_de_juego(self, perdedor: int):
+    # Método para mostrar el texto de final de juego
+    def fin_de_juego(self, perdedor: int) -> None:
         if perdedor == 1:
             print("------------------")
             print(f"Ganan las {Style.BRIGHT}{Fore.BLUE}negras{Style.RESET_ALL}")
@@ -152,6 +168,7 @@ class Vista:
             print(f"Ganan las {Style.BRIGHT}{Fore.RED}blancas{Style.RESET_ALL}")
             print("------------------")
 
+    # Método para que permitir al jugador indicar si quiere volver a empezar una vez la partida ha terminado
     def reiniciar(self):
         return input("¿Quieres volver a jugar? (escribe \"s\" si sí, cualquier cosa si no): ")
 
