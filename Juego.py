@@ -5,6 +5,9 @@ from Vista import Vista
 from Excepciones import ArchivoCorruptoError, OpcionNoValidaError
 
 class Juego:
+    ABANDONAR = 1
+    REINICIAR = 2
+    GUARDAR = 3
     __tablero: Tablero
     __piezas: list[Pieza]
     __vista: Vista
@@ -82,74 +85,22 @@ class Juego:
                     else:
                         i += 1
             
-            # Guardar las piezas movibles en una lista
             piezas_movibles: list[Vector] = [i[0] for i in situacion_piezas]
             self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, piezas_movibles)
             
-            # Si el jugador puede mover piezas, continúa el juego
             if piezas_movibles:
-                movimiento_elegido: bool = False
+                resultado_movimiento: int = self.elegir_movimiento(piezas_movibles)
 
-                # Repite el bucle mientras no se elija un movimiento
-                while not movimiento_elegido:
-                    pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles, self.__turno)
-
-                    # Comprueba si el jugador ha decidido abandonar o reiniciar
-                    if pieza_a_mover == "abandonar":
-                        juego = False
-                        break
-                    elif pieza_a_mover == "reiniciar":
-                        self.reiniciar_juego()
-                        return True
-                    elif pieza_a_mover == "guardar":
-                        self.guardar_partida()
-                        juego = False
-                        partida_guardada = True
-                        break
-                    
-                    posicion_pieza: Vector = self.__tablero.convertir_a_posicion(pieza_a_mover)
-
-                    # Busca la pieza a mover en la lista de piezas y genera los movimientos que
-                    # puede realizar
-                    for pieza in self.__piezas:
-                        if pieza.posicion == posicion_pieza:
-                            continuar_captura: bool = True
-                            primer_movimiento: bool = True
-                            while continuar_captura:
-                                posiciones_a_mover: list[str] = pieza.calcular_movimientos()
-                                self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, [self.__tablero.convertir_a_posicion(i) for i in posiciones_a_mover])
-                                movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
-
-                                # Comprueba si el jugador ha decidido abandonar o reiniciar
-                                if movimiento == "abandonar":
-                                    juego = False
-                                    movimiento_elegido = True
-                                    break
-                                elif movimiento == "reiniciar":
-                                    self.reiniciar_juego()
-                                    return True
-                                elif movimiento == "guardar":
-                                    self.guardar_partida()
-                                    juego = False
-                                    movimiento_elegido = True
-                                    partida_guardada = True
-                                    break
-                                
-                                if movimiento != "atras":
-                                    captura: bool
-                                    posicion_captura: Vector
-                                    captura, posicion_captura = pieza.mover(movimiento)
-                                    primer_movimiento = False
-                                    if captura:
-                                        self.captura(posicion_captura)
-                                        continuar_captura = pieza.comprobar_movilidad()[1]
-                                    else:
-                                        continuar_captura = False
-                                    movimiento_elegido = True
-                                else:
-                                    continuar_captura = False
-                            break
-
+                if resultado_movimiento == Juego.ABANDONAR:
+                    juego = False
+                elif resultado_movimiento == Juego.REINICIAR:
+                    self.reiniciar_juego()
+                    return True
+                elif resultado_movimiento == Juego.GUARDAR:
+                    self.guardar_partida()
+                    juego = False
+                    partida_guardada = True
+                
                 if juego:
                     self.cambiar_turno()
                     juego = self.fin_de_juego()
@@ -162,6 +113,59 @@ class Juego:
             if self.__vista.reiniciar().lower() == "s":
                 return True
         return False
+    
+    # Método que gestiona la selección de un movimiento. Recibe la lista de posibles piezas a mover y
+    # devuelve 0 si el movimiento es exitoso o las constantes ABANDONAR, REINICIAR o GUARDAR en otro caso
+    def elegir_movimiento(self, piezas_movibles) -> int:
+        movimiento_elegido: bool = False
+
+        while not movimiento_elegido:
+            pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles, self.__turno)
+
+            if pieza_a_mover == "abandonar":
+                return Juego.ABANDONAR
+            elif pieza_a_mover == "reiniciar":
+                return Juego.REINICIAR
+            elif pieza_a_mover == "guardar":
+                return Juego.GUARDAR
+            
+            posicion_pieza: Vector = self.__tablero.convertir_a_posicion(pieza_a_mover)
+
+            # Busca la pieza a mover en la lista de piezas y genera los movimientos que
+            # puede realizar
+            for pieza in self.__piezas:
+                if pieza.posicion == posicion_pieza:
+                    continuar_captura: bool = True
+                    primer_movimiento: bool = True
+                    while continuar_captura:
+                        posiciones_a_mover: list[str] = pieza.calcular_movimientos()
+                        posiciones_a_marcar = [self.__tablero.convertir_a_posicion(i) for i in posiciones_a_mover]
+                        self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, posiciones_a_marcar)
+                        movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
+
+                        if movimiento == "abandonar":
+                            return Juego.ABANDONAR
+                        elif movimiento == "reiniciar":
+                            return Juego.REINICIAR
+                        elif movimiento == "guardar":
+                            return Juego.GUARDAR
+                        
+                        if movimiento != "atras":
+                            captura: bool
+                            posicion_captura: Vector
+                            captura, posicion_captura = pieza.mover(movimiento)
+                            primer_movimiento = False
+                            if captura:
+                                self.captura(posicion_captura)
+                                continuar_captura = pieza.comprobar_movilidad()[1]
+                            else:
+                                continuar_captura = False
+                            movimiento_elegido = True
+                        else:
+                            continuar_captura = False
+                    break
+        return 0
+
     
     # Método para cambiar el turno
     def cambiar_turno(self) -> None:
@@ -203,14 +207,11 @@ class Juego:
         return False
     
     # Método que gestiona el guardado de la partida
-    # Guarda las casillas del tablero en su forma de int y el turno al final marcado con una T
+    # Guarda las casillas del tablero en su forma de int con un · para marcar cada fila y el turno al final marcado con una T
     def guardar_partida(self) -> None:
-        # Se abre el archivo en modo escritura para crearlo si no existe y borrar sus contenidos
-        # si existe
         archivo_guardado = open("partida_guardada.save", "w", encoding="utf-8")
         archivo_guardado.close()
 
-        # Se abre el archivo en modo 'append' para añadir los datos linea a linea sin sobreescirbir nada
         with open("partida_guardada.save", "a", encoding="utf-8") as archivo_guardado:
             casillas_tablero: list[str] = []
 
@@ -331,12 +332,10 @@ class Juego:
                             if pieza.posicion in pieza.fila_promociones:
                                 casillas[i][j] += 1
 
-            # Se abre el archivo en modo escritura para crearlo si no existe y borrar sus contenidos
-            # si existe
+            # Reescritura del archivo corregido:
             archivo_guardado = open("partida_guardada.save", "w", encoding="utf-8")
             archivo_guardado.close()
 
-            # Se abre el archivo en modo 'append' para añadir los datos linea a linea sin sobreescirbir nada
             with open("partida_guardada.save", "a", encoding="utf-8") as archivo_guardado:
                 casillas_tablero: list[str] = []
 
