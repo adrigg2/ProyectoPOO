@@ -13,15 +13,15 @@ class Pieza:
     __fila_promociones: list[Vector]
 
     @property
-    def posicion(self):
+    def posicion(self) -> Vector:
         return self.__posicion
     
     @property
-    def jugador(self):
+    def jugador(self) -> int:
         return self.__jugador
     
     @property
-    def fila_promociones(self):
+    def fila_promociones(self) -> list[Vector]:
         return self.__fila_promociones
 
     def __init__(self, posicion: Vector, jugador: int, tablero: Tablero, dama: bool = False) -> None:

@@ -163,6 +163,7 @@ class Juego:
                 return True
         return False
     
+    # Método para cambiar el turno
     def cambiar_turno(self) -> None:
         if self.__turno == 1:
             self.__turno = 2
