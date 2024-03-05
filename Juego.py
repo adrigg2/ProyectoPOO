@@ -86,7 +86,6 @@ class Juego:
                         i += 1
             
             piezas_movibles: list[Vector] = [i[0] for i in situacion_piezas]
-            self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, piezas_movibles)
             
             if piezas_movibles:
                 resultado_movimiento: int = self.elegir_movimiento(piezas_movibles)
@@ -107,7 +106,6 @@ class Juego:
             # Si el jugador no puede mover ninguna pieza, ha perdido
             else:
                 juego = False
-        # Una vez el juego ha terminado, se muestra la pantalla de fin de juego (solo si no se ha reiniciado)
         if not partida_guardada:
             self.__vista.fin_de_juego(self.__turno)
             if self.__vista.reiniciar().lower() == "s":
@@ -119,7 +117,8 @@ class Juego:
     def elegir_movimiento(self, piezas_movibles) -> int:
         movimiento_elegido: bool = False
 
-        while not movimiento_elegido:
+        while not movimiento_elegido:            
+            self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, piezas_movibles)
             pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles, self.__turno)
 
             if pieza_a_mover == "abandonar":
