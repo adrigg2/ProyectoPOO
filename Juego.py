@@ -115,7 +115,7 @@ class Juego:
         return False
     
     # Método que gestiona la selección de un movimiento. Recibe la lista de posibles piezas a mover y
-    # devuelve 0 si el movimiento es exitoso o las constantes ABANDONAR, REINICIAR o GUARDAR en otro caso
+    # devuelve 0 si el movimiento se realiza o las constantes ABANDONAR, REINICIAR o GUARDAR en otro caso
     def elegir_movimiento(self, piezas_movibles) -> int:
         movimiento_elegido: bool = False
 

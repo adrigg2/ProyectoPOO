@@ -190,7 +190,7 @@ class Pieza:
                     del movimientos_validos[i]
         return movimientos_validos
     
-    # Método para mover la pieza, devuelve una tupla de un bool y un vector
+    # Método para mover la pieza, devuelve una tupla
     # [0] -> Está capturando    [1] -> Posición a capturar 
     def mover(self, movimiento: str) -> tuple[bool, int]:
         nueva_posicion = self.__tablero.convertir_a_posicion(movimiento)
