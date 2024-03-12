@@ -160,11 +160,11 @@ class Vista:
     def fin_de_juego(self, perdedor: int) -> None:
         if perdedor == 1:
             print("------------------")
-            print(f"Ganan las \033[94mnegras\033[00mo")
+            print(f"Ganan las \033[94mnegras\033[00m")
             print("------------------")
         elif perdedor == 2:
             print("------------------")
-            print(f"Ganan las \033[91mblancas\033[00mo")
+            print(f"Ganan las \033[91mblancas\033[00m")
             print("------------------")
 
     # Método para que permitir al jugador indicar si quiere volver a empezar una vez la partida ha terminado
