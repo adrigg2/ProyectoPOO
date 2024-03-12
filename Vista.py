@@ -88,7 +88,7 @@ class Vista:
                         else:
                             fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}·{Style.RESET_ALL}  "
                     else:
-                        fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}{self.__piezas[casilla % 10]}{Style.RESET_ALL}  "
+                        fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}{self.__piezas[casilla // 100 % 10]}{Style.RESET_ALL}  "
                 else:
                     if casilla == 0:
                         if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
@@ -96,7 +96,7 @@ class Vista:
                         else:
                             fila_string += "·  "
                     else:
-                        fila_string += f"{self.__piezas[casilla]}  "
+                        fila_string += f"{self.__piezas[casilla // 100]}  "
             filas.append(fila_string)
         # Invierte el tablero para mostrarlo con las filas en orden descendiente (de la 8 a la 1)
         filas = filas[::-1]

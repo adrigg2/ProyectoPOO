@@ -9,13 +9,13 @@ class Juego:
     REINICIAR = 2
     GUARDAR = 3
     __tablero: Tablero
-    __piezas: list[Pieza]
+    __piezas: dict[int, Pieza]
     __vista: Vista
     __turno: int
 
     def __init__(self) -> None:
         self.__tablero = Tablero()
-        self.__piezas = []
+        self.__piezas = {}
         self.__vista = Vista()
         self.__turno = 1
 
@@ -24,12 +24,14 @@ class Juego:
         for i in range (3):
             for j in range(i - 1, 8, 2):
                 if j >= 0:
-                    self.__piezas.append(Pieza(Vector(j, i), 1, self.__tablero))
+                    pieza: Pieza = Pieza(Vector(j, i), 1, self.__tablero)
+                    self.__piezas.update({pieza.id : pieza})
 
         for i in range (5, 8):
             for j in range(i - 7, 8, 2):
                 if j >= 0:
-                    self.__piezas.append(Pieza(Vector(j, i), 2, self.__tablero))
+                    pieza: Pieza = Pieza(Vector(j, i), 2, self.__tablero)
+                    self.__piezas.update({pieza.id : pieza})
 
     # Método para gestionar el inicio y los reinicios del juego
     def inicio(self) -> None:
@@ -61,7 +63,7 @@ class Juego:
     def jugar(self) -> bool:
         if not self.__piezas:
             self.generar_piezas()
-        for pieza in self.__piezas:
+        for pieza in self.__piezas.values():
             pieza.reportar_posicion()
         juego: bool = True
         partida_guardada: bool = False
@@ -69,7 +71,7 @@ class Juego:
             situacion_piezas: list[tuple[Vector, bool]] = []
 
             # Comprobar la movilidad de las piezas del jugador que debe mover
-            for pieza in self.__piezas:
+            for pieza in self.__piezas.values():
                 if pieza.jugador == self.__turno:
                     situacion_pieza: tuple[bool, bool] = pieza.comprobar_movilidad()
                     if situacion_pieza[0]:
@@ -129,40 +131,37 @@ class Juego:
                 return Juego.GUARDAR
             
             posicion_pieza: Vector = self.__tablero.convertir_a_posicion(pieza_a_mover)
+            id_pieza: int = self.__tablero.comprobar_posicion(posicion_pieza) % 100
+            pieza: Pieza = self.__piezas[id_pieza]
 
-            # Busca la pieza a mover en la lista de piezas y genera los movimientos que
-            # puede realizar
-            for pieza in self.__piezas:
-                if pieza.posicion == posicion_pieza:
-                    continuar_captura: bool = True
-                    primer_movimiento: bool = True
-                    while continuar_captura:
-                        posiciones_a_mover: list[str] = pieza.calcular_movimientos()
-                        posiciones_a_marcar = [self.__tablero.convertir_a_posicion(i) for i in posiciones_a_mover]
-                        self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, posiciones_a_marcar)
-                        movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
+            continuar_captura: bool = True
+            primer_movimiento: bool = True
+            while continuar_captura:
+                posiciones_a_mover: list[str] = pieza.calcular_movimientos()
+                posiciones_a_marcar = [self.__tablero.convertir_a_posicion(i) for i in posiciones_a_mover]
+                self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, posiciones_a_marcar)
+                movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
 
-                        if movimiento == "abandonar":
-                            return Juego.ABANDONAR
-                        elif movimiento == "reiniciar":
-                            return Juego.REINICIAR
-                        elif movimiento == "guardar":
-                            return Juego.GUARDAR
-                        
-                        if movimiento != "atras":
-                            captura: bool
-                            posicion_captura: Vector
-                            captura, posicion_captura = pieza.mover(movimiento)
-                            primer_movimiento = False
-                            if captura:
-                                self.captura(posicion_captura)
-                                continuar_captura = pieza.comprobar_movilidad()[1]
-                            else:
-                                continuar_captura = False
-                            movimiento_elegido = True
-                        else:
-                            continuar_captura = False
-                    break
+                if movimiento == "abandonar":
+                    return Juego.ABANDONAR
+                elif movimiento == "reiniciar":
+                    return Juego.REINICIAR
+                elif movimiento == "guardar":
+                    return Juego.GUARDAR
+                
+                if movimiento != "atras":
+                    captura: bool
+                    posicion_captura: int
+                    captura, posicion_captura = pieza.mover(movimiento)
+                    primer_movimiento = False
+                    if captura:
+                        self.captura(posicion_captura)
+                        continuar_captura = pieza.comprobar_movilidad()[1]
+                    else:
+                        continuar_captura = False
+                    movimiento_elegido = True
+                else:
+                    continuar_captura = False
         return 0
 
     
@@ -175,25 +174,22 @@ class Juego:
 
     # Método para gestionar la captura de una pieza
     # Busca la pieza cuya posición coincida con la posición a capturar y luego la captura
-    def captura(self, posicion: Vector) -> None:
-        for i in range(len(self.__piezas)):
-            if self.__piezas[i].posicion == posicion:
-                self.__piezas[i].capturar()
-                del self.__piezas[i]
-                return
+    def captura(self, id: int) -> None:
+        self.__piezas[id].capturar()
+        self.__piezas.pop(id)
     
     # Método para reiniciar la partida
     # Reinicia las variables del juego a su estado inicial (en __init__())
     def reiniciar_juego(self) -> None:
         self.__tablero = Tablero()
-        self.__piezas = []
+        self.__piezas = {}
         self.__vista = Vista()
         self.__turno = 1
     
     # Método que comprueba si el juego ha terminado, es decir, si el jugador
     # que debe mover se ha quedado sin piezas
     def fin_de_juego(self) -> bool:
-        for pieza in self.__piezas:
+        for pieza in self.__piezas.values():
             if pieza.jugador == self.__turno:
                 return True
         return False
@@ -217,7 +213,7 @@ class Juego:
             for i in range(len(self.__tablero.casillas)):
                 fila = "· "
                 for j in range(len(self.__tablero.casillas[i])):
-                    fila += f"{self.__tablero.casillas[i][j]:4}"
+                    fila += f"{self.__tablero.casillas[i][j] // 100:4}"
                 fila += "\n"
                 casillas_tablero.append(fila)
 
@@ -266,10 +262,10 @@ class Juego:
                                 if pieza.posicion in pieza.fila_promociones:
                                     raise ArchivoCorruptoError("Hay piezas en posiciones no válidas")
 
-                                self.__piezas.append(pieza)
+                                self.__piezas.update({pieza.id : pieza})
                             elif casilla == 11 or casilla == 21:
-                                pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, True)
-                                self.__piezas.append(pieza)
+                                pieza: Pieza = Pieza(Vector(j, i), casilla // 10, self.__tablero, dama=True)
+                                self.__piezas.update({pieza.id : pieza})
                 carga_finalizada = True
                 carga_exitosa = True
 

@@ -3,13 +3,15 @@ from Vector import Vector
 from math import sqrt
 
 class Pieza:
+    ultima_id: int = 0
+
     __posicion: Vector
     __direccion: Vector
     __dama: bool
     __jugador: int
     __id: int
     __tablero: Tablero
-    __lista_capturas: list[list[Vector]]
+    __lista_capturas: list[tuple[Vector, Vector, int]]
     __fila_promociones: list[Vector]
 
     @property
@@ -23,6 +25,10 @@ class Pieza:
     @property
     def fila_promociones(self) -> list[Vector]:
         return self.__fila_promociones
+    
+    @property
+    def id(self) -> int:
+        return self.__id % 100
 
     def __init__(self, posicion: Vector, jugador: int, tablero: Tablero, dama: bool = False) -> None:
         self.__posicion = posicion
@@ -32,9 +38,11 @@ class Pieza:
         self.__lista_capturas = []
 
         if not self.__dama:
-            self.__id = self.__jugador * 10
+            self.__id = self.__jugador * 1000 + Pieza.ultima_id
         else:
-            self.__id = self.__jugador * 10 + 1
+            self.__id = self.__jugador * 1000 + 100 + Pieza.ultima_id
+        
+        Pieza.ultima_id += 1
 
         if self.__jugador == 1:
             self.__direccion = Vector(1, 1)
@@ -59,7 +67,7 @@ class Pieza:
                 no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                 if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                     movilidad_sin_captura = True
-                elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 10 != self.__jugador:
+                elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 1000 != self.__jugador:
                     pos_objetivo += Vector(i, 1) * self.__direccion #type: ignore
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                     if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
@@ -73,7 +81,7 @@ class Pieza:
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                     if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                         movilidad_sin_captura = True
-                    elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 10 != self.__jugador:
+                    elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 1000 != self.__jugador:
                         pos_objetivo += Vector(j, j * i).normalizar() * sqrt(2) * self.__direccion #type: ignore
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
@@ -87,7 +95,7 @@ class Pieza:
                     no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                     if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
                         movilidad_sin_captura = True
-                    elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 10 != self.__jugador:
+                    elif no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) // 1000 != self.__jugador:
                         pos_objetivo += Vector(j, j * i).normalizar() * sqrt(2) * self.__direccion #type: ignore
                         no_fuera_limites: bool = pos_objetivo.coord_x >= 0 and pos_objetivo.coord_x < 8 and pos_objetivo.coord_y >= 0 and pos_objetivo.coord_y < 8
                         if no_fuera_limites and self.__tablero.comprobar_posicion(pos_objetivo) == 0:
@@ -109,12 +117,12 @@ class Pieza:
             
             # Si la casilla está ocupada por una pieza enemiga, comprueba si la siguiente está vacía y, por tanto
             # si se puede capturar.
-            elif no_fuera_limites and self.__tablero.comprobar_posicion(posicion) // 10 != self.__jugador and not hay_captura:
+            elif no_fuera_limites and self.__tablero.comprobar_posicion(posicion) // 1000 != self.__jugador and not hay_captura:
                 pos_captura: Vector = posicion.__copy__() #type:ignore
                 posicion += Vector(incremento_x, incremento_y).normalizar() * sqrt(2) * self.__direccion #type: ignore
                 no_fuera_limites: bool = posicion.coord_x >= 0 and posicion.coord_x < 8 and posicion.coord_y >= 0 and posicion.coord_y < 8
                 if no_fuera_limites and self.__tablero.comprobar_posicion(posicion) == 0:
-                    self.__lista_capturas.append([Vector(incremento_x, incremento_y).normalizar() * sqrt(2), pos_captura.__copy__()]) #type:ignore
+                    self.__lista_capturas.append((Vector(incremento_x, incremento_y).normalizar() * sqrt(2), pos_captura.__copy__(), self.__tablero.comprobar_posicion(pos_captura) % 100)) #type:ignore
                     hay_captura = True
                     return self.__tablero.codificar_posicion(posicion), hay_captura
             return "", hay_captura
@@ -184,7 +192,7 @@ class Pieza:
     
     # Método para mover la pieza, devuelve una tupla de un bool y un vector
     # [0] -> Está capturando    [1] -> Posición a capturar 
-    def mover(self, movimiento: str) -> tuple[bool, Vector]:
+    def mover(self, movimiento: str) -> tuple[bool, int]:
         nueva_posicion = self.__tablero.convertir_a_posicion(movimiento)
         vieja_posicion = Vector(self.__posicion.coord_x, self.__posicion.coord_y)
         self.__posicion = nueva_posicion
@@ -199,9 +207,9 @@ class Pieza:
             proporcion_x: float = (nueva_posicion - vieja_posicion).coord_x / captura[0].coord_x #type:ignore
             proporcion_y: float = (nueva_posicion - vieja_posicion).coord_y / (captura[0].coord_y * self.__direccion.coord_y) #type:ignore
             if proporcion_x == proporcion_y:
-                return True, captura[1]
+                return True, captura[2]
         
-        return False, Vector(-1, -1)
+        return False, -1
 
     # Método para capturar la pieza y eliminarla del tablero
     def capturar(self) -> None:
@@ -213,7 +221,7 @@ class Pieza:
     # en el tablero
     def promocionar(self) -> None:
         self.__dama = True
-        self.__id += 1
+        self.__id += 100
 
 if __name__ == "__main__":
     pieza1 = Pieza(Vector(1, 1), 1, Tablero())
