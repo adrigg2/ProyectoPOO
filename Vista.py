@@ -1,6 +1,5 @@
 from Vector import Vector
 from Excepciones import OpcionNoValidaError
-from colorama import Fore, Back, Style
 
 class Vista:
     __piezas: dict[int, str]
@@ -12,10 +11,10 @@ class Vista:
         self.__piezas = {
             0 : "o",
             1 : "O",
-            10 : f"{Style.BRIGHT}{Fore.RED}o{Style.RESET_ALL}",
-            20 : f"{Style.BRIGHT}{Fore.BLUE}o{Style.RESET_ALL}",
-            11 : f"{Style.BRIGHT}{Fore.RED}O{Style.RESET_ALL}",
-            21 : f"{Style.BRIGHT}{Fore.BLUE}O{Style.RESET_ALL}"
+            10 : "\033[91mo\033[00m",
+            20 : "\033[94mo\033[00m",
+            11 : "\033[91mO\033[00m",
+            21 : "\033[94mO\033[00m"
         }
 
         self.__diccionario_columna = {
@@ -36,8 +35,8 @@ class Vista:
         )
 
         self.__color_jugador = {
-            1 : Style.BRIGHT + Back.RED,
-            2 : Style.BRIGHT + Back.BLUE
+            1 : "\033[91mo",
+            2 : "\033[94mo"
         }
 
     # Método que imprime un mensaje de bienvenida
@@ -69,11 +68,11 @@ class Vista:
         print()
         filas: list[str] = []
         texto_ayuda: tuple[str, str, str, str, str, str] = (
-            f"\t ESCRIBE {Fore.YELLOW}\"ABANDONAR\"{Style.RESET_ALL}",
+            f"\t ESCRIBE \033[33m\"ABANDONAR\"\033[00m",
             "\t PARA ABANDONAR LA PARTIDA",
-            f"\t ESCRIBE {Fore.YELLOW}\"REINICIAR\"{Style.RESET_ALL}",
+            f"\t ESCRIBE \033[33m\"REINICIAR\"\033[00m",
             "\t PARA REINICIAR LA PARTIDA",
-            f"\t ESCRIBE {Fore.YELLOW}\"GUARDAR\"{Style.RESET_ALL}",
+            f"\t ESCRIBE \033[33m\"GUARDAR\"\033[00m",
             "\t PARA GUARDAR Y SALIR"
         )
 
@@ -84,11 +83,11 @@ class Vista:
                 if Vector(j, i) in posiciones_a_marcar:
                     if casilla == 0:
                         if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
-                            fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}#{Style.RESET_ALL}  "
+                            fila_string += f"{self.__color_jugador[turno]}#\033[00m  "
                         else:
-                            fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}·{Style.RESET_ALL}  "
+                            fila_string += f"{self.__color_jugador[turno]}·\033[00m  "
                     else:
-                        fila_string += f"{Style.BRIGHT}{self.__color_jugador[turno]}{self.__piezas[casilla // 100 % 10]}{Style.RESET_ALL}  "
+                        fila_string += f"{self.__color_jugador[turno]}{self.__piezas[casilla // 100 % 10]}\033[00m  "
                 else:
                     if casilla == 0:
                         if (i % 2 == 0 and j % 2 == 0) or (i % 2 != 0 and j % 2 != 0):
@@ -113,9 +112,9 @@ class Vista:
     def mostrar_piezas_movibles(self, posiciones: list[Vector], turno: int) -> str:
         piezas_movibles: str = ""
         if turno == 1:
-            piezas_movibles += f"Mueven {Style.BRIGHT}{Fore.RED}blancas{Style.RESET_ALL}:\n"
+            piezas_movibles += f"Mueven \033[91mblancas\033[00m:\n"
         else:
-            piezas_movibles += f"Mueven {Style.BRIGHT}{Fore.BLUE}negras{Style.RESET_ALL}:\n"
+            piezas_movibles += f"Mueven \033[94mnegras\033[00m:\n"
         
         for posicion in posiciones:
             id_casilla: str = self.__diccionario_columna[int(posicion.coord_x)] + str(int(posicion.coord_y) + 1)
@@ -161,11 +160,11 @@ class Vista:
     def fin_de_juego(self, perdedor: int) -> None:
         if perdedor == 1:
             print("------------------")
-            print(f"Ganan las {Style.BRIGHT}{Fore.BLUE}negras{Style.RESET_ALL}")
+            print(f"Ganan las \033[94mnegras\033[00mo")
             print("------------------")
         elif perdedor == 2:
             print("------------------")
-            print(f"Ganan las {Style.BRIGHT}{Fore.RED}blancas{Style.RESET_ALL}")
+            print(f"Ganan las \033[91mblancas\033[00mo")
             print("------------------")
 
     # Método para que permitir al jugador indicar si quiere volver a empezar una vez la partida ha terminado
