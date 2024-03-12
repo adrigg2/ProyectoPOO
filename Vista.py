@@ -35,8 +35,8 @@ class Vista:
         )
 
         self.__color_jugador = {
-            1 : "\033[91mo",
-            2 : "\033[94mo"
+            1 : "\033[101m",
+            2 : "\033[104m"
         }
 
     # Método que imprime un mensaje de bienvenida
