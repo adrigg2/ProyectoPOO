@@ -118,6 +118,7 @@ class Juego:
             else:
                 juego = False
         if not partida_guardada:
+            self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno)
             self.__vista.fin_de_juego(self.__turno)
             if self.__vista.reiniciar().lower() == "s":
                 return True
