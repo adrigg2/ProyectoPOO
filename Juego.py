@@ -2,6 +2,7 @@ from Pieza import Pieza
 from Tablero import Tablero
 from Vector import Vector
 from Vista import Vista
+from Ia import Ia
 from Excepciones import ArchivoCorruptoError, OpcionNoValidaError
 
 class Juego:
@@ -12,12 +13,16 @@ class Juego:
     __piezas: dict[int, Pieza]
     __vista: Vista
     __turno: int
+    __multijugador: bool
+    __ia: Ia
 
     def __init__(self) -> None:
         self.__tablero = Tablero()
         self.__piezas = {}
         self.__vista = Vista()
         self.__turno = 1
+        self.__multijugador = False
+        self.__ia = Ia(self.__tablero)
 
     # Método que genera las piezas iniciales del juego y las coloca en su posición
     def generar_piezas(self) -> None:
@@ -47,10 +52,14 @@ class Juego:
                     jugar = True
                     menu_inicio = False
                 elif opcion_elegida == 2:
+                    jugar = True
+                    menu_inicio = False
+                    self.__multijugador = True
+                elif opcion_elegida == 3:
                     if self.cargar_partida():
                         jugar = True
                         menu_inicio = False
-                elif opcion_elegida == 3:
+                elif opcion_elegida == 4:
                     menu_inicio = False
             except OpcionNoValidaError:
                 print("La opción elegida no es correcta.")
@@ -121,7 +130,10 @@ class Juego:
 
         while not movimiento_elegido:            
             self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, piezas_movibles)
-            pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles, self.__turno)
+            if self.__multijugador or self.__turno == 1:
+                pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles, self.__turno)
+            else:
+                pieza_a_mover: str = self.__ia.elegir_pieza(piezas_movibles)
 
             if pieza_a_mover == "abandonar":
                 return Juego.ABANDONAR
@@ -140,7 +152,11 @@ class Juego:
                 posiciones_a_mover: list[str] = pieza.calcular_movimientos()
                 posiciones_a_marcar = [self.__tablero.convertir_a_posicion(i) for i in posiciones_a_mover]
                 self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, posiciones_a_marcar)
-                movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
+
+                if self.__multijugador or self.__turno == 1:
+                    movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
+                else:
+                    movimiento: str = self.__ia.elegir_movimiento(posiciones_a_mover)
 
                 if movimiento == "abandonar":
                     return Juego.ABANDONAR

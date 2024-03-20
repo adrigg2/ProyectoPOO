@@ -46,12 +46,13 @@ class Vista:
     # Método que imprime el menú de inicio y devuelve la opción elegida por el jugador
     # o lanza una excepción si la opción no es correcta
     def menu_inicio(self) -> int:
-        opciones_posibles: list[int] = [1, 2, 3]
+        opciones_posibles: list[int] = [1, 2, 3, 4]
 
         print("\nElije una opción escribiendo su número:")
-        print("1. Jugar")
-        print("2. Cargar partida")
-        print("3. Salir\n")
+        print("1. Un jugador")
+        print("2. Dos jugadores")
+        print("3. Cargar partida")
+        print("4. Salir\n")
 
         try:
             opcion_elegida: int = int(input())
