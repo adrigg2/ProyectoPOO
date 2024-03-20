@@ -129,8 +129,8 @@ class Juego:
         movimiento_elegido: bool = False
 
         while not movimiento_elegido:            
-            self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, piezas_movibles)
             if self.__multijugador or self.__turno == 1:
+                self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, piezas_movibles)
                 pieza_a_mover: str = self.__vista.mostrar_piezas_movibles(piezas_movibles, self.__turno)
             else:
                 pieza_a_mover: str = self.__ia.elegir_pieza(piezas_movibles)
@@ -150,10 +150,10 @@ class Juego:
             primer_movimiento: bool = True
             while continuar_captura:
                 posiciones_a_mover: list[str] = pieza.calcular_movimientos()
-                posiciones_a_marcar = [self.__tablero.convertir_a_posicion(i) for i in posiciones_a_mover]
-                self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, posiciones_a_marcar)
 
                 if self.__multijugador or self.__turno == 1:
+                    posiciones_a_marcar = [self.__tablero.convertir_a_posicion(i) for i in posiciones_a_mover]
+                    self.__vista.mostrar_tablero(self.__tablero.casillas, self.__turno, posiciones_a_marcar)
                     movimiento: str = self.__vista.mostrar_movimientos(posiciones_a_mover, primer_movimiento)
                 else:
                     movimiento: str = self.__ia.elegir_movimiento(posiciones_a_mover)
